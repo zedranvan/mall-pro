@@ -1,0 +1,41 @@
+# ============================================================
+# mall-pro 本地开发环境
+#
+# 说明：
+#   - 只起 Postgres（Redis / Kafka 复用本机已运行的实例）
+#   - 线上环境用 Supabase Postgres，方言一致，切换零改动
+#   - schema.sql / data.sql 首次初始化时自动执行
+#
+# 用法：
+#   docker compose up -d          启动
+#   docker compose down           停止
+#   docker compose down -v        停止并清空数据（重新初始化）
+# ============================================================
+
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: mall-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: mall_db
+      POSTGRES_USER: mall
+      POSTGRES_PASSWORD: mall_password
+      TZ: Asia/Shanghai
+      PGTZ: Asia/Shanghai
+    ports:
+      - "5432:5432"
+    volumes:
+      # Postgres 18+ 要求挂载到 /var/lib/postgresql（数据会放在其子目录）
+      - mall-pgdata:/var/lib/postgresql
+      # 只在数据卷为空（首次启动）时执行
+      - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./src/main/resources/data.sql:/docker-entrypoint-initdb.d/02-data.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mall -d mall_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  mall-pgdata:

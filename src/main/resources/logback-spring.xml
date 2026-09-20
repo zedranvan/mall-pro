@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 引入 Spring Boot 默认的控制台日志输出设置 -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <!-- 定义日志文件存放路径和文件名 -->
+    <property name="LOG_FILE" value="logs/error.log" />
+
+    <!-- 错误日志文件配置 -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 仅接收 ERROR 级别的日志，忽略 INFO、DEBUG 等 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+
+        <file>${LOG_FILE}</file>
+
+        <!-- 日志滚动策略：按天归档，避免单个文件过大 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 归档文件名格式，例如 error-2026-09-14.0.log -->
+            <fileNamePattern>logs/archive/error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 单个日志文件最大 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- 日志文件保留 30 天 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <!-- 日志输出格式 -->
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 全局配置：控制台输出所有日志，错误日志额外输出到文件 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="ERROR_FILE" />
+    </root>
+
+</configuration>
