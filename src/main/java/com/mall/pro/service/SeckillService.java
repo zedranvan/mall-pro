@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
+import static java.util.UUID.randomUUID;
 
 @Service
 public class SeckillService {
@@ -114,7 +117,19 @@ public class SeckillService {
 
         }
 
+        public String createPath(Long userId,Long goodsId){
+            String path = randomUUID().toString().replace("_","");
+            stringRedisTemplate.opsForValue().set("seckill:path:"+userId+":"+goodsId,path,60, TimeUnit.SECONDS);
+            return path;
+        }
 
+        public boolean checkPath(Long userId,Long goodsid,String path){
+            if(path == null){
+                return false;
+            }
+            String redisPath = stringRedisTemplate.opsForValue().get("seckill:path:"+userId+":"+goodsid);
+            return path.equals(redisPath);
+        }
 
     }
 

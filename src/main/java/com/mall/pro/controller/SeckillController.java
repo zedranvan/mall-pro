@@ -65,4 +65,23 @@ public class SeckillController {
         return Result.success(result);
     }
 
+    @GetMapping("/{id}/path")
+    public Result<String> getPath(@PathVariable("id") Long id,@RequestParam Long userId){
+        String path = seckillService.createPath(userId,id);
+        return Result.success(path);
+    }
+
+    @PostMapping("/{id}/{path}/safe-mq")
+    public Result<String>mqWithPaht(
+            @PathVariable("id") Long id,
+            @PathVariable("path") String path,
+            @RequestParam(defaultValue = "1001")Long userId) {
+        if(!seckillService.checkPath(userId,id,path)){
+            return Result.error(403,"非法请求：该秒杀地址无效或已经过期了！");
+        }
+        boolean success = seckillService.seckillWithMq(userId,id);
+        return success?Result.success("抢购名额已锁定，排队生成订单中"):Result.error(400,"秒杀失败：已经售罄了");
+
+    }
+
 }
