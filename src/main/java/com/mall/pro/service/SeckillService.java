@@ -1,27 +1,22 @@
 package com.mall.pro.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mall.pro.entity.SeckillGoods;
 import com.mall.pro.entity.SeckillMessage;
 import com.mall.pro.entity.SeckillOrder;
-import com.mall.pro.mapper.SeckillGoodsMapper;
 import com.mall.pro.mapper.SeckillOrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.UUID.randomUUID;
+
 
 @Service
 public class SeckillService {
@@ -81,7 +76,7 @@ public class SeckillService {
 
             localSoldOutMap.put(goodsId,true);
         }
-        if(result == null && result != 1L){
+        if(result == null || result != 1L){
             return false;
         }
         //redis这里工作完成，发消息给kafka
@@ -105,7 +100,7 @@ public class SeckillService {
                         .eq(SeckillOrder::getGoodsId, goodsId)
         );
         if (order != null){
-            return order.getGoodsId();
+            return order.getOrderId();
         }
         return Boolean.TRUE.equals(localSoldOutMap.get(goodsId)) ? -1L : 0L;
     }
