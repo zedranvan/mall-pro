@@ -31,6 +31,9 @@ public class SeckillConsumer {
     @Autowired
     private SeckillOrderMapper seckillOrderMapper;
 
+    @Autowired
+    private OutboxService outboxService;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @KafkaListener(topics = "seckill-topic")
@@ -65,7 +68,10 @@ public class SeckillConsumer {
                    .build();
            seckillOrderMapper.insert(seckillOrder);
 
-           log.info("[kafka异步落库成功] 用户:{}，成功生成订单:{}",userId,goodsId);
+           // 写入 Transactional Outbox 事务发件箱，原子保障下游（仓储、邮件、ERP）事件投递
+           outboxService.saveEvent("ORDER", orderId, "ORDER_CREATED", "order-event-topic", orderInfo);
+
+           log.info("[kafka异步落库成功] 用户:{}，成功生成订单:{} 并写入Outbox发件箱", userId, orderId);
        }catch (Exception e){
            log.error("[kafka消费者异常或重复下单拦截]异常信息:{}",e.getMessage());
            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();

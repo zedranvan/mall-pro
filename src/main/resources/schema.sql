@@ -69,8 +69,10 @@ CREATE TABLE IF NOT EXISTS order_info (
     goods_id     BIGINT        NOT NULL,
     goods_name   VARCHAR(128)  NOT NULL,                    -- 商品名快照
     order_price  NUMERIC(10,2) NOT NULL,                    -- 成交价快照
-    status       SMALLINT      NOT NULL DEFAULT 0,          -- 0待支付 1已支付 2已发货 3已关闭
+    status       SMALLINT      NOT NULL DEFAULT 0,          -- 0待支付 1已支付 2已发货 3已完成 4已取消 5已退款
+    version      INT           NOT NULL DEFAULT 1,          -- 乐观锁版本号（防状态机乱序）
     create_time  TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time  TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     pay_time     TIMESTAMP     NULL
 );
 
@@ -94,3 +96,28 @@ CREATE TABLE IF NOT EXISTS seckill_order (
 );
 
 CREATE INDEX IF NOT EXISTS idx_seckill_order_order_id ON seckill_order (order_id);
+
+
+-- ------------------------------------------------------------
+-- 6. 事务性发件箱表 (Transactional Outbox Pattern)
+--
+--    ★ 解决分布式事务假一致性：
+--      将“业务数据写库”与“事件消息投递”绑定在同一个本地事务中。
+--      由可靠投递引擎以 FOR UPDATE SKIP LOCKED 异步推向 Kafka。
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS t_outbox (
+    id              BIGINT        PRIMARY KEY,                 -- 雪花 ID
+    aggregate_type  VARCHAR(64)   NOT NULL,                    -- 聚合根类型: "ORDER"
+    aggregate_id    BIGINT        NOT NULL,                    -- 聚合根 ID: order_id
+    event_type      VARCHAR(64)   NOT NULL,                    -- 事件类型: "ORDER_CREATED"
+    topic           VARCHAR(128)  NOT NULL,                    -- 目标 Kafka Topic
+    payload         TEXT          NOT NULL,                    -- JSON 载荷
+    status          SMALLINT      NOT NULL DEFAULT 0,          -- 0待投递 1投递成功 2投递失败
+    retry_count     INT           NOT NULL DEFAULT 0,          -- 失败重试次数
+    error_msg       TEXT,                                      -- 异常信息
+    create_time     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_outbox_status_create ON t_outbox (status, create_time);
+
