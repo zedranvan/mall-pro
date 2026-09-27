@@ -19,4 +19,17 @@ public class TicketCategoryController {
         TicketCategory category = ticketCategoryService.getById(id);
         return Result.success(category);
     }
+
+    @PostMapping("/category/{id}/deduct")
+    public Result<String> deductTicket(
+            @PathVariable("id")Long id,
+            @RequestParam(value ="count",defaultValue = "1") Integer count){
+        boolean success = ticketCategoryService.deductStock(id, count);
+        if(success){
+            return Result.success("您已下单成功");
+        }else{
+            return Result.error(400,"该票档已售罄！");
+        }
+    }
+
 }
