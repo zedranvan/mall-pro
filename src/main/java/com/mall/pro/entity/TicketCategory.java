@@ -14,18 +14,15 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("order_info")
-public class OrderInfo {
+@TableName("d_ticket_category")
+public class TicketCategory {
+
     @TableId
     private Long id;
-    private Long userId;
-    private Long goodsId;
-    private String goodsName;
-    private BigDecimal orderPrice;
-    private Integer status;
-    private Integer version;
+    private Long programId;
+    private String name;
+    private BigDecimal price;
+    private Integer totalStock;
+    private Integer remainStock;
     private LocalDateTime createTime;
-    private LocalDateTime updateTime;
-    private LocalDateTime payTime;
-
 }

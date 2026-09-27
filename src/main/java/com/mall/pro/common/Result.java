@@ -6,19 +6,24 @@ public class Result<T> {
     private String message;
     private T data;
 
-    public static<T>Result<T> success(T data){
+    public static <T> Result<T> success(T data){
         Result<T> result = new Result<T>();
         result.setCode(200);
         result.setMessage("success");
         result.setData(data);
         return result;
     }
-  public static<T>Result<T> error(Integer code,String message){
+
+    public static <T> Result<T> success(){
+        return success(null);
+    }
+
+    public static <T> Result<T> error (Integer code,String message){
         Result<T> result = new Result<T>();
         result.setCode(code);
         result.setMessage(message);
         result.setData(null);
         return result;
-  }
+    }
 
 }
