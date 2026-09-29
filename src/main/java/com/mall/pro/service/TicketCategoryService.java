@@ -71,4 +71,16 @@ public class TicketCategoryService {
 
         return false;
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public boolean restoreStock(Long id,Integer count) {
+        int rows = ticketCategoryMapper.restoreStock(id,count);
+        if(rows > 0){
+            String cacheKey = CACHE_KEY_PREFIX + id;
+            stringRedisTemplate.delete(cacheKey);
+            log.info("[Redis缓存淘汰]票档库存已经归还，删除旧缓存:id={}",id);
+            return true;
+        }
+        return false;
+    }
 }

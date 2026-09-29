@@ -1,0 +1,300 @@
+% Compile check: xelatex -interaction=nonstopmode -halt-on-error \
+%   -output-directory=/tmp/mall-pro-tex-check docs/mall-pro-code-study-career-guide.tex
+% This document deliberately uses only packages available in the current TeX setup.
+\documentclass[a4paper,11pt]{article}
+\usepackage{fontspec}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{url}
+
+\setmainfont{Noto Serif CJK SC}
+\setsansfont{Noto Sans CJK SC}
+\setmonofont{Noto Sans Mono CJK SC}
+
+% A4 with approximately 2.3 cm side margins, without the unavailable geometry package.
+\setlength{\oddsidemargin}{-0.2cm}
+\setlength{\evensidemargin}{-0.2cm}
+\setlength{\textwidth}{16.4cm}
+\setlength{\topmargin}{-1.0cm}
+\setlength{\headheight}{0pt}
+\setlength{\headsep}{0pt}
+\setlength{\textheight}{25.7cm}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.35em}
+\renewcommand{\arraystretch}{1.22}
+
+\definecolor{navy}{rgb}{0.08,0.20,0.38}
+\definecolor{warning}{rgb}{0.60,0.10,0.08}
+\definecolor{softgray}{rgb}{0.95,0.96,0.97}
+\hypersetup{colorlinks=true, linkcolor=navy, urlcolor=navy, citecolor=navy}
+
+\newcommand{\filepath}[1]{\path{#1}}
+\newcommand{\keybox}[1]{%
+  \par\noindent\fbox{\parbox{0.94\textwidth}{\small #1}}\par
+}
+\newcommand{\risk}[1]{\textcolor{warning}{\textbf{#1}}}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries mall-pro：从复现项目到可自证作品}\[5pt]
+{\large\bfseries 代码分层梳理、定向学习路线与求职建议}\[6pt]
+{\small 基于 2026-09-29 工作区源码的静态审查；它不是生产系统审计，也不替代实际运行验证。}
+\end{center}
+
+\vspace{0.4em}
+\keybox{\textbf{先说结论。}你不需要因为现在看不懂复现代码，就给自己判定“资质差”。当前最缺的不是再堆两个项目，而是把这一个项目变成\textbf{能启动、能解释、能修一个真实问题、能用测试证明}的个人作品。建议未来 6--8 周把 Java 作为技术主线，同时投递实施/技术支持等相邻入口；不要等“全学会”才投，也不要用无法自证的实习经历换面试。}
+
+\section{审查范围与可信度边界}
+
+\begin{itemize}
+  \item 本文读取的是当前工作区的 Java 源码、配置、SQL、历史提交和两份简历。工作区有未提交改动，结论只针对本次读取时的快照。
+  \item 已执行 \texttt{./mvnw test}：编译成功，但 Maven 输出为 ``No tests to run''。这证明当前 14 个 Java 源文件能编译，\textbf{不证明}业务正确，也不等于“测试通过”。
+  \item 未连接实际 PostgreSQL/Redis 做端到端验证。因此“启动后是否缺表”“并发时实际执行的 SQL”仍需要后续实测确认。
+  \item Git 历史显示旧的秒杀、Outbox、Kafka 类曾被移走；根目录和 \filepath{.backup_redundant/} 中的旧材料不能自动算作当前项目已实现能力。
+\end{itemize}
+
+\section{项目的真实定位：不是微服务大平台，而是单体票务订单原型}
+
+当前运行源码是一个 Java 17 + Spring Boot 3.3.4 + MyBatis-Plus + PostgreSQL + Redis 的\textbf{单体应用}。它有订单、票档、缓存、条件扣库存、状态枚举和定时关单的雏形；没有登录、JWT、Spring Security、Nacos、Gateway、Redisson、Kafka、Lua 秒杀预扣或自动化测试包。
+
+这不是否定项目，而是把它放回正确的起点。简历和学习应以“单体票务订单与库存一致性练习”来表述，而不要写成“已落地的微服务高并发平台”。
+
+\subsection{当前包结构和职责}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.20\textwidth} >{\raggedright\arraybackslash}p{0.30\textwidth} >{\raggedright\arraybackslash}p{0.40\textwidth}}
+\textbf{层/包} & \textbf{当前类或文件} & \textbf{它实际负责什么} \\
+\hline
+启动与装配 & \filepath{MallApplication.java}、\filepath{application.properties}、\filepath{docker-compose.yml} & Spring Boot 启动、Mapper 扫描、开启定时任务；读取数据库和 Redis 连接配置。 \\
+Web 接入层 & \filepath{controller/OrderController.java}、\filepath{TicketCategoryController.java} & 接收 HTTP 参数、调用 Service、用 \texttt{Result<T>} 返回 JSON。当前直接接收 \texttt{userId}，没有认证上下文。 \\
+应用服务层 & \filepath{service/OrderService.java}、\filepath{TicketCategoryService.java} & 编排下单/支付/取消；把票档缓存、库存 SQL 与订单持久化串成业务流程。 \\
+领域与公共模型 & \filepath{entity/TicketOrder.java}、\filepath{TicketCategory.java}、\filepath{common/OrderStatus.java}、\filepath{Result.java}、异常处理类 & 描述订单/票档数据、状态规则、统一响应和业务异常。实体同时承担了“数据库行模型”角色。 \\
+持久化与基础设施 & \filepath{mapper/TicketOrderMapper.java}、\filepath{TicketCategoryMapper.java}、PostgreSQL、Redis & MyBatis-Plus CRUD；两个手写 SQL 负责条件扣库存和库存恢复；Redis 目前只作票档缓存。 \\
+后台任务 & \filepath{task/OrderTimeoutTask.java} & 每 10 秒扫描一次超时未支付订单，复用取消订单服务。 \\
+\end{longtable}
+
+\subsection{分层关系图}
+
+\begin{center}
+\fbox{\begin{minipage}{0.95\textwidth}\small\ttfamily
+HTTP client / Postman / stress\_test.py\par
+\hspace*{5.0cm}|\par
+\hspace*{1.2cm}+-------------------+-------------------+\par
+\hspace*{1.2cm}|                                       |\par
+OrderController                       TicketCategoryController\par
+\hspace*{1.2cm}|                                       |\par
+\hspace*{1.2cm}+------------> OrderService <-----------+\par
+\hspace*{4.0cm}|             \\ \par
+\hspace*{4.0cm}|              \\-> TicketCategoryService\par
+\hspace*{4.0cm}|                       |          |\par
+\hspace*{4.0cm}v                       v          v\par
+\hspace*{2.2cm}TicketOrderMapper      Redis cache  TicketCategoryMapper\par
+\hspace*{4.0cm}|                                      |\par
+\hspace*{4.0cm}v                                      v\par
+\hspace*{2.6cm}d\_ticket\_order                      d\_ticket\_category (PostgreSQL)\par
+\par
+OrderTimeoutTask (10 s) -> OrderService.cancelOrder() -> restore inventory\par
+\end{minipage}}
+\end{center}
+
+\noindent\textbf{读图时要抓住两点：}
+Redis 现在是“票档查询缓存”，不是库存真值；库存正确性的核心是 PostgreSQL 条件更新的影响行数。\filepath{OrderService} 依赖 \filepath{TicketCategoryService}，而不是直接写票档 Mapper，是为了让扣/还库存时一并淘汰旧缓存。
+
+\subsection{它不是严格的 Clean Architecture，为什么？}
+
+这是初学者很值得看懂的地方：
+
+\begin{itemize}
+  \item \filepath{TicketCategoryService} 同时做“业务规则”和“Redis 基础设施访问”；\filepath{TicketCategory} 同时做“领域对象”和 MyBatis 表映射。因此目前是常见的分层 CRUD/业务服务写法，不是严格的领域隔离。
+  \item Controller 直接返回 Entity，直接接收 \texttt{@RequestParam}，没有 Request/Response DTO。这使接口边界薄、参数校验少，但代码短，适合第一阶段学习。
+  \item 先把现有分层读懂，再考虑 DTO、Repository 接口或更复杂的架构。不要为了“看起来高级”先拆微服务。
+\end{itemize}
+
+\section{两条必须读懂的真实调用链}
+
+\subsection{下单和扣库存}
+
+\begin{enumerate}
+  \item 请求到达 \filepath{OrderController.createOreder()}：从 Query 参数获取 \texttt{userId}、\texttt{ticketCategoryId}、\texttt{count}。
+  \item \filepath{OrderService.createOrder()} 先调用 \filepath{TicketCategoryService.getById()}；它先读 Redis 的 \texttt{ticket\_category:\{id\}}，未命中才查库并回填 1 小时。
+  \item \filepath{TicketCategoryService.deductStock()} 调用手写 SQL：
+\begin{verbatim}
+UPDATE d_ticket_category
+SET remain_stock = remain_stock - :count
+WHERE id = :id AND remain_stock >= :count;
+\end{verbatim}
+  只有影响行数大于 0 才继续。对\textbf{合法正数}数量，这个条件更新把“检查库存”和“扣库存”放进同一条 SQL，是当前防超卖的核心。
+  \item 扣减成功后删除 Redis 旧缓存；\filepath{OrderService} 计算金额，构造订单快照，插入 \filepath{d_ticket_order}。方法有 \texttt{@Transactional}，目标是让“扣库存 + 插订单”在同一数据库事务内成功或回滚。
+\end{enumerate}
+
+\subsection{支付、取消和超时关单}
+
+\begin{enumerate}
+  \item \filepath{payOrder()} 和 \filepath{cancelOrder()} 都先查订单，用 \filepath{OrderStatus.canTransitionTo()} 判断状态是否允许转移。
+  \item \filepath{OrderTimeoutTask} 每 10 秒查一次“创建超过 15 分钟且仍待支付”的订单，并调用 \filepath{cancelOrder()}，避免把关单逻辑复制两遍。
+  \item 取消后代码目前固定执行 \texttt{restoreStock(..., 1)}。这意味着订单买多张票时仍只回 1 张；而 \filepath{TicketOrder} 没有 \texttt{count} 字段。这是一个非常适合你亲手修复并写进作品集的问题。
+\end{enumerate}
+
+\section{当前必须诚实标为“待修复”的问题}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.19\textwidth} >{\raggedright\arraybackslash}p{0.47\textwidth} >{\raggedright\arraybackslash}p{0.24\textwidth}}
+\textbf{优先级} & \textbf{源码证据与风险} & \textbf{完成后能证明的能力} \\
+\hline
+P0：表结构不一致 & Docker 初始化 \filepath{schema.sql} 中的 \texttt{goods/seckill\_goods/order\_info}，而实体/Mapper 访问 \texttt{d\_ticket\_category}、\texttt{d\_ticket\_order}。仓库内没有这两个票务表的 DDL。新环境很可能直接报“表不存在”。 & 表设计、Docker 初始化、可复现环境。 \\
+P0：数量没有校验 & \filepath{createOrder()} 和 \filepath{deductStock()} 没有明确限制 \texttt{count > 0}。负数传入条件更新会把库存加大，金额也可能变负。 & 参数校验、接口边界和安全思维。 \\
+P0：取消回补错误 & \filepath{cancelOrder()} 固定回补 1；订单没有保存购买数量。 & 数据建模、补偿逻辑、回归测试。 \\
+P0：乐观锁尚未接通 & \texttt{version} 只是普通字段；源码没有 \texttt{@Version}，也没有 MyBatis-Plus 乐观锁拦截器配置。\texttt{updateById()} 不足以证明支付与取消必然互斥。 & 条件更新/CAS、并发竞态和影响行数判定。 \\
+P1：无认证与越权保护 & 用户 ID 从 HTTP 参数直接传入；知道订单 ID 的调用方也可尝试支付/取消。 & 认证、授权和“谁可以操作谁的订单”的边界。 \\
+P1：演示接口绕过订单 & \filepath{/api/tickets/category/\{id\}/deduct} 可以直接扣库存但不建订单。它应仅保留为内部演示，或移除。 & API 设计和业务不变量。 \\
+P1：没有自动化测试 & 当前没有 \filepath{src/test}。压测脚本的一个输出不能代替边界、事务和状态机测试。 & JUnit/Spring Boot 测试和可信证据。 \\
+P2：旧材料混在当前项目 & 旧 SQL、\filepath{my_stress_test.py}、简历和文档仍声称 Kafka、Outbox、Lua、Gateway 等，但当前运行源码没有对应实现。\filepath{pom.xml} 的 description 还写着不适合展示的文字。 & 仓库清理、README、真实项目叙述。 \\
+\end{longtable}
+
+\keybox{\risk{重要：}“有 version 字段”不等于“实现了乐观锁”。MyBatis-Plus 的乐观锁需要版本字段标注与拦截器配置（或你自己写 \texttt{WHERE id = ? AND version = ?} 的条件更新），并且要用并发测试验证。官方说明见 \url{https://baomidou.com/plugins/optimistic-locker/}。}
+
+\section{最有效的读代码方法：不是从第一行硬背}
+
+每次只选一个行为，例如“创建一张订单”，然后回答这 6 个问题；答不出来就回到对应方法和数据库：
+
+\begin{enumerate}
+  \item 输入从哪里来？类型、默认值和合法范围是什么？
+  \item 这一步读取了什么状态？从缓存、数据库还是内存？
+  \item 这一步改变了什么状态？对应哪一条 SQL 或 Redis 命令？
+  \item 失败时抛什么异常、返回什么 HTTP/业务码、事务会不会回滚？
+  \item 多个请求同时执行时，哪一层决定只有一个成功？
+  \item 这条结论有什么可重复验证的测试或日志？
+\end{enumerate}
+
+\subsection{按这个顺序读，效率最高}
+
+\begin{enumerate}
+  \item \filepath{mapper/TicketCategoryMapper.java}：把两条 SQL 翻译成人话，尤其是影响行数为什么重要。
+  \item \filepath{service/OrderService.java}：逐行画出下单、支付、取消的输入、输出、异常和副作用。
+  \item \filepath{service/TicketCategoryService.java}：理解 Cache-Aside（读缓存，未命中查库回填；写库后删缓存）。
+  \item \filepath{common/OrderStatus.java}、\filepath{BusinessException.java}、\filepath{GlobalExceptionHandler.java}、\filepath{Result.java}：理解业务规则如何变成 API 响应。
+  \item \filepath{task/OrderTimeoutTask.java}：理解定时扫描为什么复用 Service，而不是自己直接改表。
+  \item 最后才读 Docker/SQL/压测脚本，并把它们与当前实体表逐项对齐。
+\end{enumerate}
+
+\section{6--8 周的最小学习与改造路线}
+
+从第 1 天起并行投递。每周 18--25 小时为例；若只能投入约 12 小时，延长到 10 周，但\textbf{不要额外增加 Kafka、微服务或第二个照抄项目}。
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.13\textwidth} >{\raggedright\arraybackslash}p{0.46\textwidth} >{\raggedright\arraybackslash}p{0.31\textwidth}}
+\textbf{周期} & \textbf{只做这些} & \textbf{可展示产出} \\
+\hline
+第 1 周 & Java 语言、Maven、Git、HTTP；运行项目并如实记录启动失败点；用纸或 Markdown 画一条真实调用链。 & 一页“下单请求从 HTTP 到数据库”的讲解；3 个纯 Java 小测试。 \\
+第 2 周 & Spring MVC、依赖注入、统一异常、参数校验；只完成一个很小的本人改动，例如 \texttt{count} 正数校验。 & 一个独立 Git 提交；正常、0、负数三个请求的结果记录。 \\
+第 3 周 & PostgreSQL、表设计、SQL、MyBatis/Plus；让 DDL 与实体完全一致；对一条查询保留 \texttt{EXPLAIN}。 & 可从干净环境初始化的数据库脚本和 README。 \\
+第 4 周 & 修复订单数量与取消回补；用显式条件 SQL 或正确配置的乐观锁处理支付/取消竞态。 & 一个“问题复现 -> 修复 -> 回归”的短报告。 \\
+第 5 周 & 学 Spring Boot 测试；覆盖正常下单、库存不足、非法数量、重复支付/取消、Controller 错误响应。 & 至少 6 个有意义测试；一次先失败、后修复通过的记录。 \\
+第 6 周 & Redis 缓存边界、Docker、接口文档；明确 Redis 不是库存真值。 & README、接口示例、环境变量说明和 3 分钟无剪辑演示。 \\
+第 7 周 & 作品证据化：架构图、数据模型、测试报告、问题复盘；尝试一次小型真实协作（文档/小修复/结对 review）。 & 可公开或可私下演示的仓库链接与提交历史。 \\
+第 8 周 & 面试迭代和投递：准备四个真实故事——项目来源、本人改动、一次问题排查、一次测试/部署证据。 & 两份诚实的定向简历和一段 3 分钟项目讲解。 \\
+\end{longtable}
+
+\subsection{本项目上的第一批改造任务（按优先级）}
+
+\begin{enumerate}
+  \item 补齐或重写与 \texttt{d\_ticket\_*} 实体一致的 DDL 与测试数据；不要让旧的 \texttt{goods/order\_info} 架构和新票务架构混在同一个启动路径。
+  \item 在请求 DTO 或 Service 中校验 \texttt{userId}、\texttt{ticketCategoryId}、\texttt{count}；至少拒绝空值、0 和负数。
+  \item 给订单保存购买数量；取消/超时时按订单数量归还库存。为“买 2 张再取消”写回归测试。
+  \item 用实际执行 SQL 证明状态更新具备条件：例如同时校验旧状态或旧版本；不要只相信注释。
+  \item 最后才补登录与“订单所有者”校验。Redis/Lua、MQ、Outbox 是第二阶段，而不是当前简历关键词。
+\end{enumerate}
+
+\section{读物与教程：只选读，不要漫游}
+
+\subsection{第 1 阶段：先补能读懂本项目的基础}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.25\textwidth} >{\raggedright\arraybackslash}p{0.46\textwidth} >{\raggedright\arraybackslash}p{0.19\textwidth}}
+\textbf{资源} & \textbf{选读部分} & \textbf{完成标准} \\
+\hline
+Java 官方 Dev.java & \url{https://dev.java/learn/}：Language Basics、Object Oriented Programming、Annotations and Exceptions、Collections and Streams。查 API 固定用 Java SE 17 API：\url{https://docs.oracle.com/en/java/javase/17/docs/api/}。 & 能解释实体、枚举、异常、集合在本项目中的用途；写 3 个 JUnit 测试。 \\
+Maven 官方教程 & Maven in 5 Minutes 中的 POM、Build、Maven Phases；再读 Build Lifecycle 的 \texttt{validate/compile/test/package/verify}。\newline \url{https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html}\newline \url{https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html} & 能说清 \texttt{pom.xml} 中 parent、dependency、scope、plugin，以及 \texttt{test} 与 \texttt{package} 的区别。 \\
+HTTP & MDN HTTP Overview：Basic aspects、HTTP flow、HTTP messages、状态码；必要时查 RFC 9110 的方法和状态码章节。\newline \url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview}\newline \url{https://www.rfc-editor.org/rfc/rfc9110.html} & 为下单接口写出成功、400、404、409、500 的请求/响应例子。 \\
+Git & 《Pro Git》中文版第 1 章 1.3/1.6；第 2 章 2.1--2.5；第 3 章 3.1--3.3、3.5。\newline \url{https://git-scm.com/book/zh/v2} & 每次真实改动有独立提交；完成一次分支、合并和清晰 commit message。 \\
+\end{longtable}
+
+\subsection{第 2 阶段：直接对应当前技术栈}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.25\textwidth} >{\raggedright\arraybackslash}p{0.46\textwidth} >{\raggedright\arraybackslash}p{0.19\textwidth}}
+\textbf{资源} & \textbf{选读部分} & \textbf{完成标准} \\
+\hline
+Spring Boot / Spring MVC & 完成 Building a RESTful Web Service；选读 Spring Boot 3.3 的 First Application 和 Servlet Web。重点：\texttt{@SpringBootApplication}、\texttt{@RestController}、参数绑定、DI、异常处理、配置。\newline \url{https://spring.io/guides/gs/rest-service/}\newline \url{https://docs.spring.io/spring-boot/3.3/tutorial/first-application/}\newline \url{https://docs.spring.io/spring-boot/3.3/reference/web/servlet.html} & 脱稿画出 HTTP -> Controller -> Service -> Mapper -> PostgreSQL/Redis -> Response。 \\
+MyBatis / MyBatis-Plus & MyBatis 入门的 \texttt{SqlSessionFactory}、Mapper、映射语句、作用域；动态 SQL 的 \texttt{if/where/set/foreach}；再读 MyBatis-Plus Quick Start。\newline \url{https://mybatis.org/mybatis-3/zh_CN/getting-started.html}\newline \url{https://mybatis.org/mybatis-3/zh_CN/dynamic-sql.html}\newline \url{https://baomidou.com/en/getting-started/} & 把一个 Mapper 方法翻译成实际 SQL，说明 \texttt{\#\{\}} 绑定和影响行数。 \\
+PostgreSQL（项目主线） & 官方 Tutorial：第 2 章 SQL、2.5 查询、2.6 JOIN、2.7 聚合、3.3 外键、3.4 事务；随后定点读第 11 章索引、第 13 章并发控制、第 14 章性能。\newline \url{https://www.postgresql.org/docs/current/tutorial.html}\newline \url{https://www.postgresql.org/docs/current/mvcc.html} & 写 5 条可运行 SQL；保存一份 \texttt{EXPLAIN} 并解释索引选择。 \\
+Redis & Data types 中 String/Hash/Set/Sorted Set；Transactions。\newline \url{https://redis.io/docs/latest/develop/data-types/}\newline \url{https://redis.io/docs/latest/develop/using-commands/transactions/} & 能讲清键名、TTL、缓存未命中、写后删缓存与失败边界。 \\
+测试 & Spring Boot Testing 中 \texttt{@WebMvcTest}、MockMvc、\texttt{@SpringBootTest}；JUnit User Guide 的 Writing Tests、断言和参数化测试。\newline \url{https://docs.spring.io/spring-boot/3.3/reference/testing/spring-boot-applications.html}\newline \url{https://docs.junit.org/current/user-guide/} & 至少 6 个有意义测试，而不是只运行一次压测脚本。 \\
+Docker & Docker Get Started 与 Compose Getting Started 中服务、healthcheck、命名卷、日志和容器排查部分。\newline \url{https://docs.docker.com/get-started/}\newline \url{https://docs.docker.com/compose/gettingstarted/} & 从干净环境起数据库，能解释端口、volume、healthcheck、logs。 \\
+\end{longtable}
+
+\subsection{书籍：只在有代码问题时再翻}
+
+\begin{itemize}
+  \item \textit{Effective Java, 3rd Edition}：第 2、3、5、7、8、10 章；优先 Items 10--11、17--18、26--30、45--48、49、54、69--77。它适合把基础写法变严谨，但不能代替 Java 17 官方文档。
+  \item \textit{Java Concurrency in Practice}：不要一上来整本死磕。修复状态竞态时读第 2 章（线程安全）、第 3 章（对象共享）、第 4 章（组合对象）；理解后再看第 15 章（原子变量/CAS）。
+  \item \textit{Designing Data-Intensive Applications}：先读第 7 章 Transactions，重点 ``Preventing Lost Updates''；它正好对应本项目的条件更新与版本检查。不要把“看过 DDIA”写成掌握分布式系统。
+  \item MySQL 只作为岗位迁移/面试对照：官方 MySQL 8.4 Tutorial 的 5.3、5.6，以及手册中 ACID、MVCC、锁与索引。项目本身已经使用 PostgreSQL，不要为了关键词硬改数据库。\newline \url{https://dev.mysql.com/doc/refman/8.4/en/tutorial.html}
+\end{itemize}
+
+\section{简历：先停止不可自证的表述}
+
+两份现有简历都不建议原样投递。问题不是专升本，也不是你“天生不适合开发”，而是它们把无法由代码、Git、负责人、工单、测试报告或现场演示支持的内容写成了真实生产经历。
+
+\subsection{必须删除或降级的内容}
+
+\begin{itemize}
+  \item 如果没有真实承担过公司岗位职责，\textbf{不要写公司名、Java/测试岗位、闸机对接、慢 SQL 数量、缺陷数量、生产 OOM、QPS 或百分比成果}。真实盖章不等于真实参与过这些工作。
+  \item 当前源码没有 Kafka、Outbox、Lua、Redisson 延迟队列、Nacos、Gateway、JWT/Security；它们不能出现在当前项目的技术栈或工作内容中。
+  \item 删除“扎实”“深入”“熟练”“彻底杜绝”“100\%”“生产级”等无法当场证明的词。技术词越大，面试深挖越深。
+  \item \filepath{pom.xml} 的 description 含不适合对外展示的文字；公开仓库、截图、README 和简历链接前必须清理。
+\end{itemize}
+
+\keybox{\textbf{可以诚实地这样说：}“这个项目源于开源复现/学习，我不把它包装成生产项目。当前我能现场展示的是 [本人实际完成的模块、改动、测试]；其余部分我正在通过阅读和改造补齐理解。”这会比被追问穿后失去信任强得多。}
+
+\subsection{可用的个人项目模板（方括号必须替换为真实证据）}
+
+\begin{verbatim}
+个人学习项目 / 开源复现后的二次开发：演艺票务订单原型
+技术：Java 17、Spring Boot 3、MyBatis-Plus、PostgreSQL、Redis、Docker Compose
+- 项目来源：[来源链接]；本人负责：[可指向 Git 提交的模块]。
+- 完成：[真实改动]；用 [测试方式] 验证 [实际范围和结果]。
+- 复现并修复：[一个真实问题]；复现步骤、提交和回归结果见：[链接]。
+\end{verbatim}
+
+\noindent 现在还没有上述真实改动、测试和链接时，先不要填。完成本报告第 4 节的 P0 任务后，再写进简历。
+
+\subsection{三种岗位的正确选择方式}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.22\textwidth} >{\raggedright\arraybackslash}p{0.42\textwidth} >{\raggedright\arraybackslash}p{0.26\textwidth}}
+\textbf{方向} & \textbf{适合的信号} & \textbf{现在该准备的真实证据} \\
+\hline
+Java 初级/培养生 & 愿意持续写代码、读调用链、排错，能接受短期竞争与学习曲线。 & 一个可启动仓库、一个本人修复、测试、README、3 分钟讲解。 \\
+实施/技术支持 & 愿意理解业务、配置系统、SQL/HTTP 排错、客户沟通；能接受部分岗位的驻场/出差/值班。 & 部署说明、SQL 数据核对、日志排查、问题复现和清楚的说明文档。 \\
+QA/测试 & 喜欢设计边界、复现问题、SQL 核对、接口验证。测试开发仍要 Java/Python 自动化基础。 & 20--40 条真实用例、5--10 条规范缺陷单、Postman Collection、SQL 校验、一个 JMeter 报告。 \\
+运维/DevOps & 喜欢 Linux、网络、部署、自动化和可观测性；不是“Java 太难”的逃生门。 & Docker、日志、网络和自动化脚本的真实演示；确认是否有值班要求。 \\
+\end{longtable}
+
+\section{关于“死磕 Java 还是去实施”的直接回答}
+
+不要把它当作“我有没有资质”的判决题。给自己一个有截止日期的实验：未来 6--8 周，\textbf{Java 为技术主线，求职为双轨并行}。
+
+\begin{itemize}
+  \item 建议投递比例：Java 初级/培养生约 60\%，实施或技术支持约 30\%，在补齐真实测试资产后再投 QA 约 10\%。这不是固定公式，而是避免把命运押在单一标题上。
+  \item 实施不是“能力差的退路”。如果你愿意客户沟通、理解业务、配置和交付，它是积累真实问题闭环、之后转开发/运维的正当入口。面试时务必问清开发、配置、客户支持、驻场/出差各占多少。
+  \item 真实实习可以接受；优先选择有真实工作内容、直属负责人、可展示产出、正常报酬/转正规则的岗位。不要花钱买实习，也不要再用虚构经历换机会。
+  \item 9 月 29 日不等于“所有机会结束”。不同公司没有统一的社招截止日；教育部 2026 年仍持续组织毕业生就业服务和冲刺行动。今天就开始投递，同时向学校就业中心确认你学校的应届身份和招聘渠道，不要等项目完美。官方信息可从 \url{https://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202606/t20260608_1439860.html} 和国家大学生就业服务平台获取。
+\end{itemize}
+
+\keybox{\textbf{你今天的三个动作：}(1) 暂停投递现有两份“包装版”简历；(2) 建一个诚实的个人项目版本，只保留能演示的话；(3) 选本报告的第一个 P0 问题，开一个分支，自己写复现步骤、改动和测试。这样做一周后，你就不再只是“照抄过项目的人”，而是有第一条真实工程证据的人。}
+
+\section{参考链接与版本提醒}
+
+本报告中的在线资源于 2026-09-29 核验。项目固定为 Java 17 和 Spring Boot 3.3.4；请优先使用 Spring Boot 3.3 文档，避免把 Java 21+/Spring Boot 4 的教程代码混入。Spring Boot 3.3 的系统要求见 \url{https://docs.spring.io/spring-boot/3.3/system-requirements.html}。MyBatis-Plus 某些当前文档能力高于项目 3.5.5 版本；升级前不要直接照搬新版 API。
+
+关于虚构实习的风险：人社部公布的《劳动合同法》第 8 条规定劳动者应如实说明与劳动合同直接相关的基本情况，第 26 条涉及欺诈订立/变更劳动合同的效力。请把它理解为“不要赌信任与背调”，而不是把简历润色当成规避规则的游戏。全文：\url{https://www.mohrss.gov.cn/xxgk2020/fdzdgknr/zcfg/fl/202011/t20201102_394622.html}。
+
+\end{document}

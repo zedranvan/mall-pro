@@ -1,0 +1,49 @@
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.9.17)  29 SEP 2026 01:19
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**docs/order_state_machine_detail.tex
+(./docs/order_state_machine_detail.tex
+LaTeX2e <2025-11-01>
+L3 programming layer <2026-03-20>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count271
+\c@section=\count272
+\c@subsection=\count273
+\c@subsubsection=\count274
+\c@paragraph=\count275
+\c@subparagraph=\count276
+\c@figure=\count277
+\c@table=\count278
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen150
+)
+
+! LaTeX Error: File `ctex.sty' not found.
+
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: sty)
+
+Enter file name: 
+! Emergency stop.
+<read *> 
+         
+l.3 \usepackage
+               [margin=1.5cm]{geometry}^^M
+*** (cannot \read from terminal in nonstop modes)
+
+ 
+Here is how much of TeX's memory you used:
+ 246 strings out of 470015
+ 3021 string characters out of 5475611
+ 427603 words of memory out of 6000000
+ 29099 multiletter control sequences out of 15000+600000
+ 627729 words of font info for 41 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 35i,0n,38p,173b,40s stack positions out of 10000i,1000n,20000p,200000b,200000s
+No pages of output.

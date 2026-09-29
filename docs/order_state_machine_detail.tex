@@ -1,0 +1,158 @@
+\documentclass[a4paper,11pt]{ctexart}
+\usepackage[margin=2cm]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+% 配色定义
+\definecolor{primary}{RGB}{24, 76, 120}
+\definecolor{success}{RGB}{34, 139, 34}
+\definecolor{danger}{RGB}{178, 34, 34}
+\definecolor{boxbg}{RGB}{248, 250, 252}
+\definecolor{codebg}{RGB}{240, 244, 248}
+
+\newtcolorbox{detailcard}[2][]{
+    enhanced, breakable,
+    colback=boxbg, colframe=#2,
+    fonttitle=\bfseries\small, title={#1},
+    boxrule=0.8pt, rounded corners=3pt,
+    top=6pt, bottom=6pt, left=8pt, right=8pt
+}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{大麦高并发抢票系统：订单生命周期与代码级状态机}} \\[6pt]
+    {\small \textbf{Code-Level Finite State Machine (FSM) \& Concurrency Control Specification}}
+\end{center}
+
+\vspace{0.3cm}
+
+% ==================== 1. 状态跃迁流向图 ====================
+\begin{center}
+\begin{tikzpicture}[
+    ->, >=Stealth, thick,
+    node distance=2.2cm and 5cm,
+    % 状态节点样式
+    state/.style={
+        draw=primary, fill=primary!8, rounded corners=6pt,
+        minimum width=3.8cm, minimum height=1.3cm,
+        align=center, font=\small\bfseries
+    },
+    terminal/.style={
+        draw=danger, fill=danger!8, rounded corners=6pt,
+        minimum width=3.8cm, minimum height=1.3cm,
+        align=center, font=\small\bfseries, dashed
+    },
+    paid/.style={
+        draw=success, fill=success!8, rounded corners=6pt,
+        minimum width=3.8cm, minimum height=1.3cm,
+        align=center, font=\small\bfseries
+    },
+    trans/.style={
+        font=\footnotesize\bfseries, align=center
+    }
+]
+
+    % 节点定义
+    \node[state] (CREATED) {
+        0 : CREATED (待支付) \\
+        \footnotesize \normalfont 初始态 $\cdot$ 扣减库存
+    };
+
+    \node[paid, right=of CREATED] (PAID) {
+        1 : PAID (已支付) \\
+        \footnotesize \normalfont 终态 $\cdot$ 锁定票权
+    };
+
+    \node[terminal, below=of CREATED] (CANCELLED) {
+        4 : CANCELLED (已取消) \\
+        \footnotesize \normalfont 终态 $\cdot$ 回滚自愈库存
+    };
+
+    % 跃迁连线
+    \draw[->, line width=1.5pt, draw=success] (CREATED) -- node[trans, above=2pt, text=success] {
+        【跃迁 A】用户付款成功 \\
+        \scriptsize \texttt{payOrder(orderId)}
+    } (PAID);
+
+    \draw[->, line width=1.5pt, draw=danger] (CREATED) -- node[trans, right=4pt, text=danger] {
+        【跃迁 B】超时关单 / 主动取消 \\
+        \scriptsize \texttt{cancelOrder(orderId)}
+    } (CANCELLED);
+
+    \draw[->, line width=0.8pt, draw=gray, dashed] (PAID) -- node[trans, above=2pt, text=gray] {
+        \scriptsize 后续生命周期 \\
+        \scriptsize 2:SHIPPED / 5:REFUNDED
+    } ++(3.2cm, 0);
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.2cm}
+
+% ==================== 2. 代码级跃迁详情卡片 ====================
+
+\begin{detailcard}[【跃迁 A 剖析】待支付 (0) $\rightarrow$ 已支付 (1) ：乐观锁与版本递增]{success}
+\begin{itemize}[leftmargin=0.8cm, itemsep=3pt]
+    \item \textbf{触发入口：} \texttt{OrderController.payOrder(@PathVariable Long id)}
+    \item \textbf{第一道防线（状态门卫）：}
+    \begin{quote}
+        \footnotesize
+        \texttt{OrderStatus current = OrderStatus.fromCode(order.getStatus());} \\
+        \texttt{if (!current.canTransitionTo(OrderStatus.PAID)) \{} \\
+        \quad \texttt{throw new BusinessException(400, "订单状态有误，无法支付！");} \\
+        \texttt{\}}
+    \end{quote}
+    \item \textbf{底层执行 SQL（PostgreSQL 物理行锁与 CAS）：}
+    \begin{quote}
+        \footnotesize
+        \texttt{UPDATE d\_ticket\_order} \\
+        \texttt{SET status = 1, version = version + 1, pay\_time = NOW()} \\
+        \texttt{WHERE id = ? AND version = 1;}
+    \end{quote}
+    \item \textbf{并发冲突拦截：} \texttt{int rows = mapper.updateById(order);} 若 \texttt{rows == 0}，说明在读取与更新之间已被关单线程修改，立即抛出 \texttt{BusinessException(409, "订单状态已发生变更")} 阻断脏更新。
+\end{itemize}
+\end{detailcard}
+
+\vspace{0.2cm}
+
+\begin{detailcard}[【跃迁 B 剖析】待支付 (0) $\rightarrow$ 已取消 (4) ：自动关单与库存自愈]{danger}
+\begin{itemize}[leftmargin=0.8cm, itemsep=3pt]
+    \item \textbf{触发入口：}
+    \begin{itemize}
+        \item 定时巡逻任务：\texttt{OrderTimeoutTask.scanAndCancelExpiredOrders()} (\texttt{@Scheduled(fixedDelay = 10000)})
+        \item 用户主动取消：\texttt{OrderController.cancelOrder(@PathVariable Long id)}
+    \end{itemize}
+    \item \textbf{关单更新 SQL：}
+    \begin{quote}
+        \footnotesize
+        \texttt{UPDATE d\_ticket\_order SET status = 4, version = version + 1 WHERE id = ? AND version = 1;}
+    \end{quote}
+    \item \textbf{两步级联库存自愈（\texttt{restoreStock}）：}
+    \begin{enumerate}
+        \item \textbf{数据库库存回滚：} \texttt{UPDATE d\_ticket\_category SET remain\_stock = remain\_stock + 1 WHERE id = ?;}
+        \item \textbf{Redis 缓存一致性淘汰：} \texttt{redisTemplate.delete("ticket:category:" + id);}
+    \end{enumerate}
+\end{itemize}
+\end{detailcard}
+
+\vspace{0.2cm}
+
+\begin{detailcard}[【并发竞态裁决】第 14 分 59 秒碰撞的底层原理]{primary}
+\small
+\textbf{冲突场景：} 用户在倒计时即将结束时点击支付，与后台定时关单线程在同一毫秒内到达。\\
+\textbf{裁决机制：}
+两个线程同时读取到 \texttt{version = 1}。当它们尝试执行 \texttt{UPDATE} 时，PostgreSQL 对该数据行施加**行级排他排队（X-Lock）**：
+\begin{enumerate}[leftmargin=0.8cm, itemsep=2pt]
+    \item 优先获取到行锁的线程执行成功，行内 \texttt{version} 跃迁为 \texttt{2}，返回影响行数 $1$。
+    \item 后释放锁的线程执行匹配 \texttt{WHERE version = 1} 时发现版本已被改写，返回影响行数 $0$。
+    \item \textbf{结论：} 永远只有一方能够胜出，绝对不会出现“钱扣了但票被关单”或“库存重复归还”的数据灾难。
+\end{enumerate}
+\end{detailcard}
+
+\end{document}

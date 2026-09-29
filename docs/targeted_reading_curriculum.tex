@@ -1,0 +1,140 @@
+\documentclass[a4paper,10pt]{ctexart}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+
+\definecolor{primary}{RGB}{15, 45, 95}
+\definecolor{accent}{RGB}{170, 30, 30}
+\definecolor{codecol}{RGB}{35, 95, 40}
+\definecolor{boxbg}{RGB}{250, 252, 255}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary
+}
+
+\tcbuselibrary{skins,breakable}
+\newtcolorbox{curriculumbox}[1]{
+    colback=boxbg, colframe=primary, fonttitle=\bfseries\small,
+    title=#1, rounded corners=3pt, boxrule=0.8pt, breakable
+}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{高并发抢票系统：代码级锚定精确研读书单}} \\[4pt]
+    {\large \textbf{Code-Anchored Surgical Reading Specification}} \\[3pt]
+    \textbf{三维精准绑定：[工程源码位置] $\Longleftrightarrow$ [底层执行行为] $\Longleftrightarrow$ [书籍精确章节与页码]}
+\end{center}
+
+\vspace{0.2cm}
+
+% ==================== 模块 1 ====================
+\begin{curriculumbox}{模块一：防超卖、原子写与丢失更新 (Lost Updates)}
+\textbf{1. 本工程精确源码位置：}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item 接口调用：\texttt{src/main/java/com/mall/pro/service/OrderService.java} (第 41 行)
+    \item 扣减执行：\texttt{src/main/java/com/mall/pro/service/TicketCategoryService.java} (第 40--46 行)
+    \item 物理 SQL：\texttt{UPDATE d\_ticket\_category SET remain\_stock = remain\_stock - ? WHERE id = ? AND remain\_stock >= ?;}
+\end{itemize}
+
+\textbf{2. 权威书籍精确位置：}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item \textbf{书名：} 《Designing Data-Intensive Applications (DDIA)》--- Martin Kleppmann (ISBN: 978-1449373320)
+    \item \textbf{英文原版精确定位：} \textbf{Chapter 7: Transactions}
+    \begin{itemize}
+        \item \textbf{Section 7.2.3 ``Preventing Lost Updates''} $\rightarrow$ \textbf{第 242 页至第 246 页}
+        \item 重点研读第 243 页：``Atomic write operations''（对应本工程原子扣减避免并发覆盖）。
+        \item 重点研读第 244 页：``Automatically detecting lost updates'' 与 ``Compare-and-set (CAS)''。
+    \end{itemize}
+    \item \textbf{中文译版精确定位：} 《数据密集型应用系统设计》 (中国电力出版社, ISBN: 978-7519823634)
+    \begin{itemize}
+        \item \textbf{第 7 章：事务} $\rightarrow$ \textbf{7.2.3 防止更新丢失} $\rightarrow$ \textbf{第 213 页至第 217 页}。
+    \end{itemize}
+\end{itemize}
+\end{curriculumbox}
+
+\vspace{0.2cm}
+
+% ==================== 模块 2 ====================
+\begin{curriculumbox}{模块二：PostgreSQL 物理行级排他锁 (X-Lock) 与 MVCC 可见性}
+\textbf{1. 本工程精确源码位置：}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item 容器节点：Docker 容器 \texttt{mall-postgres} (端口 5432)
+    \item 触发位置：执行原子 UPDATE 时，数据库内核对行记录元组打上排他互斥标记
+    \item 现象验证：100 并发压测脚本 \texttt{src/main/resources/stress\_test.py} (第 25--50 行) 导致 80 线程排队并阻断
+\end{itemize}
+
+\textbf{2. 权威专著与官方在线精确位置：}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item \textbf{专著：} 《The Internals of PostgreSQL》--- Hironobu Suzuki (PG 核心开发者权威专著)
+    \item \textbf{在线直达 URL：} \url{https://www.interdb.jp/pg/pgsql05.html}
+    \item \textbf{精确定位节次：}
+    \begin{itemize}
+        \item \textbf{Section 5.3: Concurrency Control with Locks} $\rightarrow$ 重点看 \textbf{Row-Level Locks (ExclusiveLock)}
+        \item 重点解析：当事务更新行时，元组头部的 \texttt{t\_xmax} 如何被设置为当前事务 ID，且为何其他事务尝试获取该行排他锁时必须在 \texttt{ProcArray} 中挂起等待。
+        \item \textbf{Section 5.4: Transaction Isolation Level} $\rightarrow$ 重点看 Read Committed 级别下对被更新行重新读取最新已提交版本的机制。
+    \end{itemize}
+\end{itemize}
+\end{curriculumbox}
+
+\vspace{0.2cm}
+
+% ==================== 模块 3 ====================
+\begin{curriculumbox}{模块三：状态机防篡改、硬件 CAS 与乐观锁}
+\textbf{1. 本工程精确源码位置：}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item 实体定义：\texttt{src/main/java/com/mall/pro/entity/TicketOrder.java} (第 31 行 \texttt{version})
+    \item 状态矩阵：\texttt{src/main/java/com/mall/pro/common/OrderStatus.java} (第 38--48 行 \texttt{canTransitionTo})
+    \item 冲突拦截：\texttt{src/main/java/com/mall/pro/service/OrderService.java} (第 79--83 行 \texttt{rows == 0})
+    \item 物理 SQL：\texttt{UPDATE d\_ticket\_order SET status=1, version=version+1 WHERE id=? AND version=1;}
+\end{itemize}
+
+\textbf{2. 权威书籍精确位置：}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item \textbf{书名：} 《Java Concurrency in Practice (JCiP)》--- Brian Goetz 等 (ISBN: 978-0321349606)
+    \item \textbf{英文原版精确定位：} \textbf{Chapter 15: Atomic Variables and Nonblocking Synchronization}
+    \begin{itemize}
+        \item \textbf{Section 15.2 ``Hardware Support for Concurrency''} $\rightarrow$ \textbf{第 321 页至第 324 页}
+        \item 重点研读第 322 页：``Compare and Swap (CAS)'' 原理及底层 CPU 指令行为。
+        \item \textbf{Section 15.3.2 ``Performance: Locks versus Atomic Variables''} $\rightarrow$ \textbf{第 328 页至第 331 页}（为什么中低竞争下乐观版本控制吞吐量远超排他阻塞锁）。
+    \end{itemize}
+    \item \textbf{中文译版精确定位：} 《Java 并发编程实战》 (机械工业出版社, ISBN: 978-7111370048)
+    \begin{itemize}
+        \item \textbf{第 15 章：原子变量与非阻塞同步机制} $\rightarrow$ \textbf{15.2 硬件对并发的支持} $\rightarrow$ \textbf{第 262 页至第 265 页}。
+    \end{itemize}
+\end{itemize}
+\end{curriculumbox}
+
+\vspace{0.2cm}
+
+% ==================== 模块 4 ====================
+\begin{curriculumbox}{模块四：双写一致性与 Cache-Aside 架构标准}
+\textbf{1. 本工程精确源码位置：}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item 缓存读穿：\texttt{src/main/java/com/mall/pro/service/TicketCategoryService.java} (第 23--35 行 \texttt{getById})
+    \item 缓存淘汰：\texttt{src/main/java/com/mall/pro/service/TicketCategoryService.java} (第 50--56 行 \texttt{restoreStock})
+    \item 操作代码：\texttt{redisTemplate.delete(CACHE\_KEY\_PREFIX + id);}
+\end{itemize}
+
+\textbf{2. 工业界架构权威规范精确位置：}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item \textbf{微软云官方架构中心 (Azure Architecture Center)：}
+    \begin{itemize}
+        \item \textbf{专著/规范：} \textit{Cloud Design Patterns: Cache-Aside Pattern}
+        \item \textbf{官方直达 URL：} \url{https://learn.microsoft.com/en-us/azure/architecture/patterns/cache-aside}
+        \item \textbf{核心精读章节：} ``Issues and Considerations''（为什么并发场景下必须使用 Delete 淘汰缓存，而非直接 Update 写入新缓存）。
+    \end{itemize}
+\end{itemize}
+\end{curriculumbox}
+
+\vspace{0.3cm}
+\begin{center}
+\textbf{执行纪律：} 坚决不看目录以外的任何页码。每读一个章节，对照左侧本工程的文件行号，在草稿纸上复现其时序图。
+\end{center}
+
+\end{document}
