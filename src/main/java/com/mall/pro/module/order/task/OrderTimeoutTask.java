@@ -1,10 +1,11 @@
-package com.mall.pro.task;
+package com.mall.pro.module.order.task;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.mall.pro.common.OrderStatus;
-import com.mall.pro.entity.TicketOrder;
-import com.mall.pro.mapper.TicketOrderMapper;
-import com.mall.pro.service.OrderService;
+import com.mall.pro.module.order.entity.TicketOrder;
+import com.mall.pro.module.order.enums.OrderStatus;
+import com.mall.pro.module.order.mapper.TicketOrderMapper;
+import com.mall.pro.module.order.service.OrderService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,13 +16,11 @@ import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class OrderTimeoutTask {
 
-    @Autowired
-    private TicketOrderMapper ticketOrderMapper;
-
-    @Autowired
-    private OrderService orderService;
+    private final TicketOrderMapper ticketOrderMapper;
+    private final  OrderService orderService;
 
     /**
      * 每 10 秒自动巡逻一次
@@ -29,22 +28,19 @@ public class OrderTimeoutTask {
      */
     @Scheduled(fixedDelay = 10000)
     public void scanAndCancelExpiredOrders() {
-        // 算出 15 分钟前的时间线
         LocalDateTime expireTime = LocalDateTime.now().minusMinutes(15);
 
-        // 查询条件：status = 0 AND create_time < 15分钟前
         LambdaQueryWrapper<TicketOrder> query = new LambdaQueryWrapper<TicketOrder>()
                 .eq(TicketOrder::getStatus, OrderStatus.CREATED.getCode())
                 .lt(TicketOrder::getCreateTime, expireTime)
-                .last("LIMIT 50"); // 批量处理，单次最多扫50笔，保护数据库
+                .last("LIMIT 50");
 
         List<TicketOrder> expiredOrders = ticketOrderMapper.selectList(query);
         if (expiredOrders.isEmpty()) {
             return;
         }
 
-        log.info("[定时巡逻] 发现 {} 笔超时未支付订单，启动自动关单与库存回滚...",
-                expiredOrders.size());
+        log.info("[定时巡逻] 发现 {} 笔超时未支付订单，启动自动关单与库存回滚...", expiredOrders.size());
         for (TicketOrder order : expiredOrders) {
             try {
                 orderService.cancelOrder(order.getId(), "超时未支付系统自动关单");
@@ -53,5 +49,4 @@ public class OrderTimeoutTask {
             }
         }
     }
-
 }

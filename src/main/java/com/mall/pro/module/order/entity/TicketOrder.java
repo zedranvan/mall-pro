@@ -1,4 +1,4 @@
-package com.mall.pro.entity;
+package com.mall.pro.module.order.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -33,7 +33,7 @@ public class TicketOrder {
 
     private Integer status;
 
-    /** 乐观锁 */
+    /** 乐观锁版本号 */
     private Integer version;
 
     private LocalDateTime createTime;

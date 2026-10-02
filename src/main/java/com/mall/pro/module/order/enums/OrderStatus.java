@@ -1,10 +1,6 @@
-package com.mall.pro.common;
+package com.mall.pro.module.order.enums;
 
 import lombok.Getter;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 @Getter
 public enum OrderStatus {

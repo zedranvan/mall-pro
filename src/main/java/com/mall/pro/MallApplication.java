@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
-@MapperScan("com.mall.pro.mapper")
+@MapperScan("com.mall.pro.module")
 @SpringBootApplication
 public class MallApplication {
     public static void main(String[] args) {
