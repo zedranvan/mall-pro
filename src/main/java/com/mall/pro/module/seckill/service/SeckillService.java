@@ -63,11 +63,11 @@ public class SeckillService {
         }
         if(result == -1L){
             log.warn("[秒杀限购阻断]用户已购买过该票档：userId={},categoryId={}",userId,ticketCategoryId);
-            throw new BusinessException(400,"手慢了，该票档已经售罄！");
+            throw new BusinessException(400,"您已抢购过该票档，每人限购一张");
         }
         if(result == 0L){
             log.warn("[秒杀售罄阻断]票档库存不足：categoryId={}",ticketCategoryId);
-            throw new BusinessException(400,"您已抢购过该票档，每人限购一张");
+            throw new BusinessException(400,"手慢了，该票档已经售罄！");
         }
 
         //result == 1L:说明成功斩获Redis内存令牌，放行去落库写订单！

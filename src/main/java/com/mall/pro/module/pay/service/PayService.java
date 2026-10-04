@@ -1,28 +1,31 @@
 package com.mall.pro.module.pay.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mall.pro.common.BusinessException;
 import com.mall.pro.module.order.entity.TicketOrder;
 import com.mall.pro.module.order.enums.OrderStatus;
 import com.mall.pro.module.order.service.OrderService;
 import com.mall.pro.module.pay.dto.PayNotifyRequest;
 import com.mall.pro.module.pay.dto.PrepayResponse;
+import com.mall.pro.module.pay.entity.OutboxMessage;
 import com.mall.pro.module.pay.entity.PayRecord;
 import com.mall.pro.module.pay.enums.PayStatus;
+import com.mall.pro.module.pay.event.OrderPaidEvent;
+import com.mall.pro.module.pay.mapper.OutboxMapper;
 import com.mall.pro.module.pay.mapper.PayRecordMapper;
+import com.mall.pro.module.pay.util.PaySignHelper;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.math.RoundingMode;
 
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -33,8 +36,11 @@ public class PayService {
 
     private final PayRecordMapper payRecordMapper;
     private final OrderService orderService;
-    private final StringRedisTemplate stringRedisTemplate;
-    private final DefaultRedisScript<Long> seckillDeductScript;
+    private final ObjectMapper objectMapper;
+    private final PaySignHelper paySignHelper;
+    private final OutboxMapper outboxMapper;
+
+
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -71,98 +77,74 @@ public class PayService {
                 .build();
     }
 
-    public static final String PAY_SECRET = "MALL_PAY_SECRET_8888";
-
-    public String generateSign(String paySn, java.math.BigDecimal amount, String payStatus) {
-        try {
-            String rawText = String.format("amount=%s&paySn=%s&payStatus=%s",
-                    amount.setScale(2, RoundingMode.HALF_UP), paySn, payStatus);
-            javax.crypto.Mac mac = javax.crypto.Mac.getInstance("HmacSHA256");
-            mac.init(new javax.crypto.spec.SecretKeySpec(PAY_SECRET.getBytes(java.nio.charset
-                    .StandardCharsets.UTF_8), "HmacSHA256"));
-            byte[] hash = mac.doFinal(rawText.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hash) {
-                hexString.append(String.format("%02x", b));
-            }
-            return hexString.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("生成签名失败", e);
-        }
-    }
-
-    public boolean verifySign(PayNotifyRequest request) {
-        if (request == null || request.getSign() == null) {
-            return false;
-        }
-        String calculatedSign = generateSign(
-                request.getPaySn(),
-                request.getAmount(),
-                request.getPayStatus());
-        return calculatedSign.equalsIgnoreCase(request.getSign());
-    }
 
     @Transactional(rollbackFor = Exception.class)
     public boolean handleNotify(PayNotifyRequest request) {
         // 验证签名
-        if(!verifySign(request)){
-
-        log.warn("[支付回调]签名检验失败，paySn={}",request.getPaySn());
-        return false;
+        // 步骤 1：防伪验签
+        if (!paySignHelper.verifySign(request)) {
+            log.warn("[支付回调] 签名校验失败: paySn={}", request.getPaySn());
+            return false;
         }
 
-        //查流水单号
+        // 步骤 2：防重幂等与金额防篡改校验
         PayRecord record = payRecordMapper.selectOne(
-                new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<PayRecord>()
-                        .eq(PayRecord::getPaySn,request.getPaySn())
+                new LambdaQueryWrapper<PayRecord>().eq(PayRecord::getPaySn, request.getPaySn())
         );
-        if(record == null){
-            log.warn("[支付回调]流水不存在，paySn={}",request.getPaySn());
-            return false;
-        }
-        //幂等性检验
-        if(java.util.Objects.equals(record.getStatus(),PayStatus.SUCCESS.getCode())){
-            log.info("[支付回调]该流水已处理成功，忽略重复回调:paySn={}",
-                    request.getPaySn());
-                    return true;
-        }
-        //金额精确比对
-        if(record.getAmount().compareTo(request.getAmount()) != 0){
-            log.error("[支付回调] 金额篡改告警！库内金额={},回调金额={},paySn={}",
-                    record.getAmount(),request.getAmount(),request.getPaySn());
-            return false;
-        }
-        //状态跃迁与订单履约
+        if (record == null) return false;
+        if (Objects.equals(record.getStatus(), PayStatus.SUCCESS.getCode())) return true;
+        if (record.getAmount().compareTo(request.getAmount()) != 0) return false;
+
+        // 步骤 3：状态跃迁（流水成功 + 订单已支付）
         record.setStatus(PayStatus.SUCCESS.getCode());
         record.setTradeNo(request.getTradeNo());
         record.setPayTime(LocalDateTime.now());
         payRecordMapper.updateById(record);
-
         orderService.payOrder(record.getOrderId());
-        log.info("[支付回调成功]支付流水与订单状态完成跃迁:paySn={},orderId={}",request.getPaySn(),record.getOrderId());
 
+        // 步骤 4：本地消息表落库（将出票信件存入 t_outbox）
+        saveOutboxEvent(record);
+
+        log.info("[支付回调成功] 流水与订单完成履约: paySn={}, orderId={}", record.getPaySn(), record.getOrderId());
         return true;
+    }
+
+    /**
+     * 私有辅助：在同一事务中持久化 Outbox 领域事件
+     */
+    private void saveOutboxEvent(PayRecord record) {
+        try {
+            OrderPaidEvent event = OrderPaidEvent.builder()
+                    .orderId(record.getOrderId())
+                    .paySn(record.getPaySn())
+                    .tradeNo(record.getTradeNo())
+                    .userId(record.getUserId())
+                    .amount(record.getAmount())
+                    .payTime(record.getPayTime())
+                    .build();
+
+            OutboxMessage outbox = OutboxMessage.builder()
+                    .aggregateType("ORDER")
+                    .aggregateId(record.getOrderId())
+                    .eventType("ORDER_PAID")
+                    .topic("order-paid-topic")
+                    .payload(objectMapper.writeValueAsString(event))
+                    .status(0)       // 0: 待投递
+                    .retryCount(0)
+                    .createTime(LocalDateTime.now())
+                    .updateTime(LocalDateTime.now())
+                    .build();
+
+            outboxMapper.insert(outbox);
+            log.info("[本地消息表落库] orderId={}, topic={}", record.getOrderId(), outbox.getTopic());
+        } catch (Exception e) {
+            log.error("[本地消息表落库异常] orderId={}", record.getOrderId(), e);
+            throw new BusinessException(500, "记录出票事件失败，支付事务回滚");
+        }
+    }
+        public String generateSign(String paySn, BigDecimal amount, String payStatus) {
+            return paySignHelper.generateSign(paySn, amount, payStatus);
         }
 
-        public void seckill(Long userId,Long ticketCategoryId,Integer count){
-            List<String> keys = Arrays.asList(
-                    "ticket:stock:"+ticketCategoryId,
-                    "ticket:users:"+ticketCategoryId
-            );
-            Long result = stringRedisTemplate.execute(
-                    seckillDeductScript,
-                    keys,
-                    String.valueOf(userId),
-                    String.valueOf(count)
-            );
-
-            if(result == -1L){
-                throw new BusinessException(400,"您已经购买过该票档，一人限购一张！");
-            }
-            if(result == 0L){
-                throw new BusinessException(400,"手慢了，该票档已经被售罄！");
-            }
-        }
     }
 
