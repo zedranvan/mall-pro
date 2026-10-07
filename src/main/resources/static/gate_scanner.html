@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>演唱会现场闸机扫码核销仿真系统 - mall-pro</title>
+    <!-- 引入纯轻量二维码生成库 -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --text-main: #c9d1d9;
+            --accent-green: #2ea043;
+            --accent-red: #da3633;
+            --accent-blue: #58a6ff;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 24px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        header h1 { font-size: 26px; color: #fff; margin-bottom: 8px; }
+        header p { color: #8b949e; font-size: 14px; }
+        .container {
+            display: flex;
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .pane {
+            flex: 1;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+        .pane-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        /* 手机票夹端样式 */
+        .phone-mock {
+            background: #21262d;
+            border: 2px solid #30363d;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .ticket-card {
+            background: linear-gradient(135deg, #1f242c, #2d333b);
+            border: 1px solid #444c56;
+            border-radius: 16px;
+            width: 100%;
+            padding: 20px;
+            margin-top: 16px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .ticket-title { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 6px; }
+        .ticket-seat { font-size: 22px; font-weight: 800; color: #f0883e; margin-bottom: 16px; letter-spacing: 1px; }
+        .qr-wrapper {
+            background: #fff;
+            padding: 12px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .ticket-code {
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--accent-blue);
+            background: #161b22;
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            letter-spacing: 2px;
+        }
+        .status-badge {
+            margin-top: 12px;
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .badge-unused { background: rgba(46,160,67,0.2); color: #3fb950; border: 1px solid #2ea043; }
+        .badge-used { background: rgba(218,54,51,0.2); color: #f85149; border: 1px solid #da3633; }
+
+        /* 闸机端样式 */
+        .gate-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        select, input, button {
+            background: #21262d;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+        select { flex: 1; }
+        button {
+            cursor: pointer;
+            background: #238636;
+            border-color: #2ea043;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        button:hover { background: #2ea043; }
+        .scanner-screen {
+            flex: 1;
+            background: #000;
+            border: 3px solid #30363d;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 280px;
+            transition: border-color 0.3s;
+        }
+        .laser-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff0055, transparent);
+            box-shadow: 0 0 15px #ff0055;
+            animation: scan 2s infinite linear;
+        }
+        @keyframes scan {
+            0% { top: 10%; opacity: 0.8; }
+            50% { top: 90%; opacity: 1; }
+            100% { top: 10%; opacity: 0.8; }
+        }
+        .light-indicator {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #21262d;
+            border: 3px solid #30363d;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            transition: all 0.3s;
+        }
+        .light-green {
+            background: #2ea043 !important;
+            box-shadow: 0 0 40px #2ea043;
+            border-color: #3fb950 !important;
+        }
+        .light-red {
+            background: #da3633 !important;
+            box-shadow: 0 0 40px #da3633;
+            border-color: #f85149 !important;
+        }
+        .gate-msg {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            max-width: 90%;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+        .log-box {
+            background: #090d13;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+            height: 140px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            color: #8b949e;
+        }
+        .log-entry { margin-bottom: 4px; }
+        .log-success { color: #3fb950; }
+        .log-fail { color: #f85149; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🎫 演出票务现场闸机扫码核销仿真系统</h1>
+    <p>真实对接后端 /api/tickets/my-tickets 与 /api/tickets/verify 接口 | 支持防伪动态核销与防重复刷码拦截</p>
+</header>
+
+<div class="container">
+    <!-- 左侧：手机电子票夹 -->
+    <div class="pane">
+        <div class="pane-title">
+            <span>📱 用户手机端 · 电子票夹</span>
+        </div>
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+            <input type="number" id="userIdInput" value="6666" style="width:120px;" placeholder="用户 ID">
+            <button onclick="loadUserTickets()">刷新票夹</button>
+            <button onclick="buyNewTicket()" style="background:#1f6feb; border-color:#388bfd;">⚡ 一键买新票</button>
+        </div>
+
+        <div class="phone-mock">
+            <div id="ticketContainer" style="width:100%;">
+                <div style="color:#8b949e; text-align:center; padding:40px;">正在加载票夹...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧：现场检票闸机 -->
+    <div class="pane">
+        <div class="pane-title">
+            <span>🚧 现场检票口 · 智能闸机核销扫描器</span>
+        </div>
+
+        <div class="gate-selector">
+            <select id="gateSelector">
+                <option value="GATE_NORTH_01">北门通道 01号闸机 (看台区)</option>
+                <option value="GATE_SOUTH_02">南门通道 02号闸机 (内场VIP)</option>
+                <option value="GATE_EAST_03">东门通道 03号闸机 (备用通道)</option>
+            </select>
+            <button onclick="scanCurrentTicket()" style="background:#f0883e; border-color:#d29922;">📷 对准闸机一键扫码</button>
+        </div>
+
+        <div class="scanner-screen" id="scannerScreen">
+            <div class="laser-line"></div>
+            <div class="light-indicator" id="gateLight">⚪</div>
+            <div class="gate-msg" id="gateStatusText">等待游客出示门票二维码...</div>
+        </div>
+
+        <div style="margin-top:16px; display:flex; gap:8px;">
+            <input type="text" id="manualCode" placeholder="或者手动输入/扫码枪扫入防伪码 (TCK_...)" style="flex:1;">
+            <button onclick="manualVerify()" style="background:#6e7681; border-color:#8b949e;">手动核销</button>
+        </div>
+
+        <div class="log-box" id="logBox">
+            <div class="log-entry">[*] 闸机通信链路已就绪，时刻监听扫码信号...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentTicket = null;
+    let qrGenerator = null;
+
+    async function loadUserTickets() {
+        const uid = document.getElementById('userIdInput').value || 6666;
+        try {
+            const resp = await fetch(`/api/tickets/my-tickets?userId=${uid}`);
+            const res = await resp.json();
+            const container = document.getElementById('ticketContainer');
+            if (res.code === 200 && res.data && res.data.length > 0) {
+                currentTicket = res.data[0]; // 展示最新的票
+                renderTicket(currentTicket);
+                addLog(`[票夹] 成功获取用户 ${uid} 的最新门票: ${currentTicket.verifyCode}`);
+            } else {
+                container.innerHTML = `<div style="color:#f85149; text-align:center; padding:30px;">
+                    该用户暂无有效门票！<br><button onclick="buyNewTicket()" style="margin-top:12px;">立即出票</button>
+                </div>`;
+            }
+        } catch (e) {
+            addLog(`[网络异常] 加载票夹失败: ${e.message}`, 'fail');
+        }
+    }
+
+    function renderTicket(t) {
+        const isUnused = t.status === 0;
+        const container = document.getElementById('ticketContainer');
+        container.innerHTML = `
+            <div class="ticket-card">
+                <div class="ticket-title">${t.ticketTitle || '周杰伦巡回演唱会'}</div>
+                <div class="ticket-seat">${t.seatInfo || 'A区 1排 1号'}</div>
+                <div class="qr-wrapper">
+                    <div id="qrcode"></div>
+                </div>
+                <div>
+                    <span class="ticket-code">${t.verifyCode}</span>
+                </div>
+                <div>
+                    <span class="status-badge ${isUnused ? 'badge-unused' : 'badge-used'}">
+                        ${isUnused ? '🟢 待入场核销' : '🔴 已使用 (已入场)'}
+                    </span>
+                </div>
+            </div>
+        `;
+        // 动态生成真实二维码
+        new QRCode(document.getElementById("qrcode"), {
+            text: t.verifyCode,
+            width: 140,
+            height: 140,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+        document.getElementById('manualCode').value = t.verifyCode;
+    }
+
+    async function scanCurrentTicket() {
+        if (!currentTicket) {
+            alert('请先加载或生成一张门票！');
+            return;
+        }
+        await doVerify(currentTicket.verifyCode);
+    }
+
+    async function manualVerify() {
+        const code = document.getElementById('manualCode').value.trim();
+        if (!code) {
+            alert('请输入防伪核销码！');
+            return;
+        }
+        await doVerify(code);
+    }
+
+    async function doVerify(code) {
+        const gate = document.getElementById('gateSelector').value;
+        const light = document.getElementById('gateLight');
+        const text = document.getElementById('gateStatusText');
+        const screen = document.getElementById('scannerScreen');
+
+        text.innerText = `正在与安全网关校验凭据: ${code}...`;
+        light.className = 'light-indicator';
+
+        try {
+            const resp = await fetch(`/api/tickets/verify?verifyCode=${encodeURIComponent(code)}&gateNo=${encodeURIComponent(gate)}`, {
+                method: 'POST'
+            });
+            const res = await resp.json();
+
+            if (res.code === 200) {
+                // 绿灯通行
+                light.className = 'light-indicator light-green';
+                light.innerText = '✔';
+                text.innerText = res.data;
+                text.style.color = '#3fb950';
+                screen.style.borderColor = '#2ea043';
+                addLog(`[绿灯开闸] ${gate} 成功核销: ${code}`, 'success');
+                // 自动刷新左侧票夹状态
+                setTimeout(loadUserTickets, 800);
+            } else {
+                // 红灯拦截
+                light.className = 'light-indicator light-red';
+                light.innerText = '✖';
+                text.innerText = res.message;
+                text.style.color = '#f85149';
+                screen.style.borderColor = '#da3633';
+                addLog(`[红灯拦截] ${gate} 拦截异常: ${res.message}`, 'fail');
+            }
+        } catch (e) {
+            addLog(`[系统异常] 核销请求失败: ${e.message}`, 'fail');
+        }
+    }
+
+    async function buyNewTicket() {
+        const uid = document.getElementById('userIdInput').value || 6666;
+        addLog(`[*] 正在模拟极速出票 (下单 -> 支付 -> Outbox -> 出票)...`);
+        try {
+            // 1. 创建订单
+            const oResp = await fetch(`/api/orders/create?userId=${uid}&ticketCategoryId=101&count=1`, {method: 'POST'});
+            const oData = await oResp.json();
+            const orderId = oData.data.id;
+            // 2. 预下单
+            const pResp = await fetch(`/api/pay/prepay?orderId=${orderId}`, {method: 'POST'});
+            const pData = await pResp.json();
+            const paySn = pData.data.paySn;
+            // 3. 模拟扣款
+            await fetch(`/api/pay/mock/cashier?paySn=${paySn}`, {method: 'POST'});
+            addLog(`[出票] 支付成功！等待 2 秒后台异步出票落库...`, 'success');
+            setTimeout(loadUserTickets, 2500);
+        } catch (e) {
+            addLog(`[出票失败] ${e.message}`, 'fail');
+        }
+    }
+
+    function addLog(msg, type = '') {
+        const box = document.getElementById('logBox');
+        const div = document.createElement('div');
+        div.className = `log-entry ${type === 'success' ? 'log-success' : type === 'fail' ? 'log-fail' : ''}`;
+        const time = new Date().toLocaleTimeString();
+        div.innerText = `[${time}] ${msg}`;
+        box.prepend(div);
+    }
+
+    // 页面加载自动获取
+    window.onload = loadUserTickets;
+</script>
+
+</body>
+</html>
