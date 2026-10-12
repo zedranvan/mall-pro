@@ -14,10 +14,13 @@
 import time
 import random
 import requests
+import redis
 
 BASE_URL = "http://localhost:8080"
 PROGRAM_ID = 1
 CATEGORY_ID = 101
+
+REDIS_CLIENT = redis.Redis(host='127.0.0.1', port=6379, password='redis_password', decode_responses=True)
 
 def print_step(title):
     print("\n" + "=" * 65)
@@ -54,9 +57,13 @@ def run_test():
 
     # 3. 购票支付
     print_step("步骤 1：出票并由服务端私钥签发 RSA-2048 离线防伪数字证书")
+    REDIS_CLIENT.set(f"ticket:stock:{CATEGORY_ID}", 10)
+    REDIS_CLIENT.delete(f"ticket:users:{CATEGORY_ID}")
+
     buy_res = requests.post(f"{BASE_URL}/api/seckill/order", headers=headers, params={
         "ticketCategoryId": CATEGORY_ID, "attendeeId": attendee_id
     }).json()
+    assert buy_res.get("code") == 200, f"秒杀下单失败: {buy_res}"
     order_id = buy_res["data"]["id"]
 
     prepay = requests.post(f"{BASE_URL}/api/pay/prepay", headers=headers, params={"orderId": order_id}).json()

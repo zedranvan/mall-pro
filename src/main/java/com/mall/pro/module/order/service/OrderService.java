@@ -33,19 +33,26 @@ public class OrderService {
 
         return order;
     }
+    public TicketOrder createOrder(Long userId, Long ticketCategoryId, Integer count) {
+        return createOrder(userId, ticketCategoryId, count, null);
+    }
+
+    // 2. 支持观演人实名快照的核心方法
     @Transactional(rollbackFor = Exception.class)
-    public TicketOrder  createOrder(Long userId,Long ticketCategoryId,Integer count){
-        log.info("[开始下单] userId={},ticketCategoryId={},count={}",userId,ticketCategoryId,count);
+    public TicketOrder createOrder(Long userId, Long ticketCategoryId, Integer count, com.mall.pro.module.user.entity.UserAttendee
+            attendee) {
+        log.info("[开始下单] userId={}, ticketCategoryId={}, count={}, attendee={}", userId, ticketCategoryId, count, attendee);
 
         TicketCategory category = ticketCategoryService.getById(ticketCategoryId);
 
-        boolean deductSuccess = ticketCategoryService.deductStock(ticketCategoryId,count);
-        if(!deductSuccess){
+        boolean deductSuccess = ticketCategoryService.deductStock(ticketCategoryId, count);
+        if (!deductSuccess) {
             log.warn("[下单阻断] 库存不足或已售罄: categoryId={}", ticketCategoryId);
             throw new BusinessException(400, "手慢了，该票档已经售罄！");
         }
         BigDecimal totalPrice = category.getPrice().multiply(new BigDecimal(count));
-        TicketOrder order = TicketOrder.builder()
+
+        TicketOrder.TicketOrderBuilder builder = TicketOrder.builder()
                 .userId(userId)
                 .programId(category.getProgramId())
                 .ticketCategoryId(category.getId())
@@ -53,12 +60,20 @@ public class OrderService {
                 .orderPrice(totalPrice)
                 .status(OrderStatus.CREATED.getCode())
                 .version(1)
-                .createTime(LocalDateTime.now())
-                .build();
+                .createTime(LocalDateTime.now());
 
+        // 核心：若有观演人，写入实名快照
+        if (attendee != null) {
+            builder.attendeeId(attendee.getId())
+                    .realName(attendee.getRealName())
+                    .idCardMasked(attendee.getIdCardMasked())
+                    .idCardHash(attendee.getIdCardHash());
+        }
+
+        TicketOrder order = builder.build();
         ticketOrderMapper.insert(order);
 
-        // 委托给延迟队列管理器
+        // 委托给延迟双向时间轮管理器
         orderDelayQueue.push(order.getId(), DEFAULT_TIMEOUT_MILLIS);
         log.info("[下单成功] 订单已创建: orderId={}", order.getId());
         return order;

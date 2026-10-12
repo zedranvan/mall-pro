@@ -28,9 +28,12 @@ public class SeckillController {
 
     @PostMapping("/order")
     public Result<TicketOrder> seckill(
-            @RequestParam("userId") Long userId,
-            @RequestParam("ticketCategoryId") Long ticketCategoryId){
-        TicketOrder order = seckillService.seckill(userId,ticketCategoryId);
+            @RequestParam("ticketCategoryId") Long ticketCategoryId,
+            @RequestParam(value = "attendeeId", required = false) Long attendeeId) {
+
+        // 核心安全防线：从 JWT 线程上下文中无感提取当前用户，彻底根治水平越权！
+        Long currentUserId = com.mall.pro.common.util.UserContext.getUserId();
+        TicketOrder order = seckillService.seckill(currentUserId, ticketCategoryId, attendeeId);
         return Result.success(order);
     }
 

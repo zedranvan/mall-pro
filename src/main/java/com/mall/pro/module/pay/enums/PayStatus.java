@@ -6,7 +6,9 @@ import lombok.Getter;
 public enum PayStatus {
     INIT(0,"待支付"),
     SUCCESS(1,"支付成功"),
-    FAILED(2,"支付失败");
+    FAILED(2,"支付失败"),
+    REFUNDED(3,"已退款");
+
 
     private final int code;
     private final String description;

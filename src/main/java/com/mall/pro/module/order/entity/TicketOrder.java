@@ -39,4 +39,12 @@ public class TicketOrder {
     private LocalDateTime createTime;
 
     private LocalDateTime payTime;
+
+    private Long attendeeId;
+
+    private String realName;
+
+    private String idCardMasked;
+
+    private String idCardHash;
 }

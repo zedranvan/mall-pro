@@ -3,3 +3,5 @@ logs/
 .idea/
 *.iml
 .mvn/wrapper/maven-wrapper.jar
+benchmark/report/
+benchmark/*.jtl

@@ -1,0 +1,725 @@
+2026-10-09 21:40:42,175 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
+2026-10-09 21:40:42,191 INFO o.a.j.JMeter: Loading user properties from: /home/zedran/下载/apache-jmeter-5.6.3/bin/user.properties
+2026-10-09 21:40:42,192 INFO o.a.j.JMeter: Loading system properties from: /home/zedran/下载/apache-jmeter-5.6.3/bin/system.properties
+2026-10-09 21:40:42,198 INFO o.a.j.JMeter: Copyright (c) 1998-2024 The Apache Software Foundation
+2026-10-09 21:40:42,198 INFO o.a.j.JMeter: Version 5.6.3
+2026-10-09 21:40:42,198 INFO o.a.j.JMeter: java.version=25.0.4.1
+2026-10-09 21:40:42,198 INFO o.a.j.JMeter: java.vm.name=OpenJDK 64-Bit Server VM
+2026-10-09 21:40:42,198 INFO o.a.j.JMeter: os.name=Linux
+2026-10-09 21:40:42,198 INFO o.a.j.JMeter: os.arch=amd64
+2026-10-09 21:40:42,198 INFO o.a.j.JMeter: os.version=7.2.9-200.fc44.x86_64
+2026-10-09 21:40:42,198 INFO o.a.j.JMeter: file.encoding=UTF-8
+2026-10-09 21:40:42,198 INFO o.a.j.JMeter: java.awt.headless=true
+2026-10-09 21:40:42,198 INFO o.a.j.JMeter: Max memory     =1073741824
+2026-10-09 21:40:42,198 INFO o.a.j.JMeter: Available Processors =12
+2026-10-09 21:40:42,215 INFO o.a.j.JMeter: Default Locale=English (EN)
+2026-10-09 21:40:42,215 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
+2026-10-09 21:40:42,216 INFO o.a.j.JMeter: JMeterHome=/home/zedran/下载/apache-jmeter-5.6.3
+2026-10-09 21:40:42,216 INFO o.a.j.JMeter: user.dir  =/home/zedran/mall-pro
+2026-10-09 21:40:42,216 INFO o.a.j.JMeter: PWD       =/home/zedran/mall-pro
+2026-10-09 21:40:42,219 INFO o.a.j.JMeter: IP: 127.0.0.1 Name: localhost FullName: localhost
+2026-10-09 21:40:42,231 INFO o.a.j.JMeter: Setting property 'jmeter.reportgenerator.outputdir' to:'/home/zedran/mall-pro/benchmark/report'
+2026-10-09 21:40:42,234 INFO o.a.j.s.FileServer: Default base='/home/zedran/mall-pro'
+2026-10-09 21:40:42,235 INFO o.a.j.s.FileServer: Set new base='/home/zedran/mall-pro/benchmark'
+2026-10-09 21:40:42,501 INFO o.a.j.s.SaveService: Testplan (JMX) version: 2.2. Testlog (JTL) version: 2.2
+2026-10-09 21:40:42,518 INFO o.a.j.s.SaveService: Using SaveService properties version 5.0
+2026-10-09 21:40:42,521 INFO o.a.j.s.SaveService: Using SaveService properties file encoding UTF-8
+2026-10-09 21:40:42,524 INFO o.a.j.s.SaveService: Loading file: /home/zedran/mall-pro/benchmark/program_detail_benchmark.jmx
+2026-10-09 21:40:42,568 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/html is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-10-09 21:40:42,569 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xhtml+xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-10-09 21:40:42,569 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-10-09 21:40:42,569 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-10-09 21:40:42,569 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/vnd.wap.wml is org.apache.jmeter.protocol.http.parser.RegexpHTMLParser
+2026-10-09 21:40:42,569 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/css is org.apache.jmeter.protocol.http.parser.CssParser
+2026-10-09 21:40:42,583 INFO o.a.j.JMeter: Creating summariser <summary>
+2026-10-09 21:40:42,593 INFO o.a.j.r.d.ReportGenerator: ReportGenerator will use for Parsing the separator: ','
+2026-10-09 21:40:42,594 INFO o.a.j.r.d.ReportGenerator: Will generate report at end of test from  results file: /home/zedran/mall-pro/benchmark/result.jtl
+2026-10-09 21:40:42,594 INFO o.a.j.r.d.ReportGenerator: Reading report generator properties from: /home/zedran/下载/apache-jmeter-5.6.3/bin/reportgenerator.properties
+2026-10-09 21:40:42,595 INFO o.a.j.r.d.ReportGenerator: Merging with JMeter properties
+2026-10-09 21:40:42,598 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.temp_dir' not found, using default value 'temp' instead.
+2026-10-09 21:40:42,600 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.apdex_per_transaction' not found, using default value 'null' instead.
+2026-10-09 21:40:42,600 INFO o.a.j.r.c.ReportGeneratorConfiguration: apdex_per_transaction is empty, not APDEX per transaction customization
+2026-10-09 21:40:42,601 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.sample_filter' not found, using default value 'null' instead.
+2026-10-09 21:40:42,601 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.report_title' not found, using default value 'null' instead.
+2026-10-09 21:40:42,601 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.start_date' not found, using default value 'null' instead.
+2026-10-09 21:40:42,601 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.end_date' not found, using default value 'null' instead.
+2026-10-09 21:40:42,601 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.date_format' not found, using default value 'null' instead.
+2026-10-09 21:40:42,601 INFO o.a.j.r.c.ReportGeneratorConfiguration: Will use date range start date: null, end date: null
+2026-10-09 21:40:42,605 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.totalTPS.exclude_controllers' not found, using default value 'false' instead.
+2026-10-09 21:40:42,605 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.activeThreadsOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-10-09 21:40:42,606 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.timeVsThreads.exclude_controllers' not found, using default value 'false' instead.
+2026-10-09 21:40:42,606 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimeDistribution.exclude_controllers' not found, using default value 'false' instead.
+2026-10-09 21:40:42,606 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.transactionsPerSecond.exclude_controllers' not found, using default value 'false' instead.
+2026-10-09 21:40:42,606 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimePercentiles.exclude_controllers' not found, using default value 'false' instead.
+2026-10-09 21:40:42,606 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimePercentilesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-10-09 21:40:42,606 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-10-09 21:40:42,606 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.connectTimeOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-10-09 21:40:42,606 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.latenciesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-10-09 21:40:42,607 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.filters_only_sample_series' not found, using default value 'true' instead.
+2026-10-09 21:40:42,607 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.series_filter' not found, using default value '' instead.
+2026-10-09 21:40:42,607 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.show_controllers_only' not found, using default value 'false' instead.
+2026-10-09 21:40:42,607 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.filters_only_sample_series' not found, using default value 'true' instead.
+2026-10-09 21:40:42,608 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.series_filter' not found, using default value '' instead.
+2026-10-09 21:40:42,608 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.show_controllers_only' not found, using default value 'false' instead.
+2026-10-09 21:40:42,620 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2026-10-09 21:40:42,621 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2026-10-09 21:40:42,621 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2026-10-09 21:40:42,624 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must contain the string: '.functions.'
+2026-10-09 21:40:42,624 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must not contain the string: '.gui.'
+2026-10-09 21:40:42,693 INFO o.a.j.JMeter: Running test (1791553242693)
+2026-10-09 21:40:42,710 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : 200并发读线程组
+2026-10-09 21:40:42,710 INFO o.a.j.e.StandardJMeterEngine: Starting 200 threads for group 200并发读线程组.
+2026-10-09 21:40:42,710 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2026-10-09 21:40:42,710 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=200 ramp-up=2 delayedStart=false
+2026-10-09 21:40:42,716 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-1
+2026-10-09 21:40:42,722 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-2
+2026-10-09 21:40:42,732 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-3
+2026-10-09 21:40:42,736 INFO o.a.j.p.h.s.HTTPHCAbstractImpl: Local host = localhost
+2026-10-09 21:40:42,741 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-4
+2026-10-09 21:40:42,743 INFO o.a.j.p.h.s.HTTPHC4Impl: HTTP request retry count = 0
+2026-10-09 21:40:42,745 INFO o.a.j.s.SampleResult: Note: Sample TimeStamps are START times
+2026-10-09 21:40:42,745 INFO o.a.j.s.SampleResult: sampleresult.default.encoding is set to UTF-8
+2026-10-09 21:40:42,745 INFO o.a.j.s.SampleResult: sampleresult.useNanoTime=true
+2026-10-09 21:40:42,745 INFO o.a.j.s.SampleResult: sampleresult.nanoThreadSleep=5000
+2026-10-09 21:40:42,751 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-5
+2026-10-09 21:40:42,761 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-6
+2026-10-09 21:40:42,765 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2026-10-09 21:40:42,765 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2026-10-09 21:40:42,771 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-7
+2026-10-09 21:40:42,781 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-8
+2026-10-09 21:40:42,790 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-9
+2026-10-09 21:40:42,801 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-10
+2026-10-09 21:40:42,811 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-11
+2026-10-09 21:40:42,820 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-12
+2026-10-09 21:40:42,831 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-13
+2026-10-09 21:40:42,841 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-14
+2026-10-09 21:40:42,851 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-15
+2026-10-09 21:40:42,861 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-16
+2026-10-09 21:40:42,870 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-17
+2026-10-09 21:40:42,881 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-18
+2026-10-09 21:40:42,891 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-19
+2026-10-09 21:40:42,901 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-20
+2026-10-09 21:40:42,910 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-21
+2026-10-09 21:40:42,921 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-22
+2026-10-09 21:40:42,931 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-23
+2026-10-09 21:40:42,941 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-24
+2026-10-09 21:40:42,951 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-25
+2026-10-09 21:40:42,960 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-26
+2026-10-09 21:40:42,970 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-27
+2026-10-09 21:40:42,981 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-28
+2026-10-09 21:40:42,990 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-29
+2026-10-09 21:40:43,001 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-30
+2026-10-09 21:40:43,011 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-31
+2026-10-09 21:40:43,021 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-32
+2026-10-09 21:40:43,030 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-33
+2026-10-09 21:40:43,041 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-34
+2026-10-09 21:40:43,051 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-35
+2026-10-09 21:40:43,060 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-36
+2026-10-09 21:40:43,071 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-37
+2026-10-09 21:40:43,081 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-38
+2026-10-09 21:40:43,091 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-39
+2026-10-09 21:40:43,101 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-40
+2026-10-09 21:40:43,110 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-41
+2026-10-09 21:40:43,121 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-42
+2026-10-09 21:40:43,131 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-43
+2026-10-09 21:40:43,141 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-44
+2026-10-09 21:40:43,152 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-45
+2026-10-09 21:40:43,160 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-46
+2026-10-09 21:40:43,171 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-47
+2026-10-09 21:40:43,181 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-48
+2026-10-09 21:40:43,191 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-49
+2026-10-09 21:40:43,200 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-50
+2026-10-09 21:40:43,210 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-51
+2026-10-09 21:40:43,221 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-52
+2026-10-09 21:40:43,231 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-53
+2026-10-09 21:40:43,240 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-54
+2026-10-09 21:40:43,250 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-55
+2026-10-09 21:40:43,261 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-56
+2026-10-09 21:40:43,271 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-57
+2026-10-09 21:40:43,281 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-58
+2026-10-09 21:40:43,290 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-59
+2026-10-09 21:40:43,301 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-60
+2026-10-09 21:40:43,311 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-61
+2026-10-09 21:40:43,321 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-62
+2026-10-09 21:40:43,330 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-63
+2026-10-09 21:40:43,340 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-64
+2026-10-09 21:40:43,351 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-65
+2026-10-09 21:40:43,361 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-66
+2026-10-09 21:40:43,371 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-67
+2026-10-09 21:40:43,380 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-68
+2026-10-09 21:40:43,390 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-69
+2026-10-09 21:40:43,401 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-70
+2026-10-09 21:40:43,411 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-71
+2026-10-09 21:40:43,421 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-72
+2026-10-09 21:40:43,430 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-73
+2026-10-09 21:40:43,440 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-74
+2026-10-09 21:40:43,451 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-75
+2026-10-09 21:40:43,461 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-76
+2026-10-09 21:40:43,471 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-77
+2026-10-09 21:40:43,480 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-78
+2026-10-09 21:40:43,491 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-79
+2026-10-09 21:40:43,501 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-80
+2026-10-09 21:40:43,511 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-81
+2026-10-09 21:40:43,521 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-82
+2026-10-09 21:40:43,530 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-83
+2026-10-09 21:40:43,540 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-84
+2026-10-09 21:40:43,551 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-85
+2026-10-09 21:40:43,561 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-86
+2026-10-09 21:40:43,571 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-87
+2026-10-09 21:40:43,581 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-88
+2026-10-09 21:40:43,590 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-89
+2026-10-09 21:40:43,600 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-90
+2026-10-09 21:40:43,611 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-91
+2026-10-09 21:40:43,621 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-92
+2026-10-09 21:40:43,630 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-93
+2026-10-09 21:40:43,640 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-94
+2026-10-09 21:40:43,651 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-95
+2026-10-09 21:40:43,661 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-96
+2026-10-09 21:40:43,671 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-97
+2026-10-09 21:40:43,680 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-98
+2026-10-09 21:40:43,691 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-99
+2026-10-09 21:40:43,700 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-100
+2026-10-09 21:40:43,708 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-16
+2026-10-09 21:40:43,709 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-16
+2026-10-09 21:40:43,711 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-101
+2026-10-09 21:40:43,721 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-102
+2026-10-09 21:40:43,730 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-103
+2026-10-09 21:40:43,740 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-104
+2026-10-09 21:40:43,751 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-105
+2026-10-09 21:40:43,760 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-106
+2026-10-09 21:40:43,771 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-107
+2026-10-09 21:40:43,780 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-108
+2026-10-09 21:40:43,789 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-18
+2026-10-09 21:40:43,789 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-18
+2026-10-09 21:40:43,790 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-109
+2026-10-09 21:40:43,800 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-110
+2026-10-09 21:40:43,811 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-111
+2026-10-09 21:40:43,820 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-112
+2026-10-09 21:40:43,831 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-113
+2026-10-09 21:40:43,840 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-114
+2026-10-09 21:40:43,850 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-115
+2026-10-09 21:40:43,860 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-116
+2026-10-09 21:40:43,870 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-117
+2026-10-09 21:40:43,881 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-118
+2026-10-09 21:40:43,891 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-119
+2026-10-09 21:40:43,900 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-120
+2026-10-09 21:40:43,910 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-121
+2026-10-09 21:40:43,920 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-122
+2026-10-09 21:40:43,930 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-123
+2026-10-09 21:40:43,941 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-124
+2026-10-09 21:40:43,951 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-125
+2026-10-09 21:40:43,962 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-126
+2026-10-09 21:40:43,971 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-127
+2026-10-09 21:40:43,972 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-9
+2026-10-09 21:40:43,972 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-9
+2026-10-09 21:40:43,980 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-128
+2026-10-09 21:40:43,991 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-8
+2026-10-09 21:40:43,991 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-129
+2026-10-09 21:40:43,991 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-8
+2026-10-09 21:40:44,000 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-130
+2026-10-09 21:40:44,005 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-15
+2026-10-09 21:40:44,005 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-15
+2026-10-09 21:40:44,011 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-131
+2026-10-09 21:40:44,021 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-132
+2026-10-09 21:40:44,030 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-133
+2026-10-09 21:40:44,041 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-134
+2026-10-09 21:40:44,050 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-135
+2026-10-09 21:40:44,061 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-136
+2026-10-09 21:40:44,069 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-2
+2026-10-09 21:40:44,070 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-2
+2026-10-09 21:40:44,070 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-137
+2026-10-09 21:40:44,080 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-138
+2026-10-09 21:40:44,091 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-139
+2026-10-09 21:40:44,096 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-1
+2026-10-09 21:40:44,096 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-1
+2026-10-09 21:40:44,100 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-140
+2026-10-09 21:40:44,109 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-19
+2026-10-09 21:40:44,109 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-19
+2026-10-09 21:40:44,111 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-141
+2026-10-09 21:40:44,120 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-142
+2026-10-09 21:40:44,130 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-6
+2026-10-09 21:40:44,130 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-6
+2026-10-09 21:40:44,130 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-143
+2026-10-09 21:40:44,132 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-14
+2026-10-09 21:40:44,132 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-14
+2026-10-09 21:40:44,141 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-144
+2026-10-09 21:40:44,151 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-145
+2026-10-09 21:40:44,160 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-146
+2026-10-09 21:40:44,171 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-147
+2026-10-09 21:40:44,180 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-17
+2026-10-09 21:40:44,180 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-148
+2026-10-09 21:40:44,180 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-17
+2026-10-09 21:40:44,190 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-149
+2026-10-09 21:40:44,201 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-150
+2026-10-09 21:40:44,210 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-151
+2026-10-09 21:40:44,220 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-152
+2026-10-09 21:40:44,225 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-11
+2026-10-09 21:40:44,225 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-11
+2026-10-09 21:40:44,230 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-7
+2026-10-09 21:40:44,230 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-7
+2026-10-09 21:40:44,230 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-153
+2026-10-09 21:40:44,241 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-154
+2026-10-09 21:40:44,251 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-155
+2026-10-09 21:40:44,261 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-156
+2026-10-09 21:40:44,270 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-157
+2026-10-09 21:40:44,281 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-158
+2026-10-09 21:40:44,281 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-5
+2026-10-09 21:40:44,282 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-5
+2026-10-09 21:40:44,290 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-159
+2026-10-09 21:40:44,301 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-160
+2026-10-09 21:40:44,306 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-12
+2026-10-09 21:40:44,306 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-12
+2026-10-09 21:40:44,312 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-161
+2026-10-09 21:40:44,320 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-162
+2026-10-09 21:40:44,330 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-163
+2026-10-09 21:40:44,341 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-164
+2026-10-09 21:40:44,351 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-165
+2026-10-09 21:40:44,360 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-166
+2026-10-09 21:40:44,370 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-167
+2026-10-09 21:40:44,373 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-21
+2026-10-09 21:40:44,374 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-21
+2026-10-09 21:40:44,381 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-168
+2026-10-09 21:40:44,392 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-169
+2026-10-09 21:40:44,400 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-170
+2026-10-09 21:40:44,404 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-13
+2026-10-09 21:40:44,404 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-13
+2026-10-09 21:40:44,409 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-20
+2026-10-09 21:40:44,409 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-20
+2026-10-09 21:40:44,411 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-171
+2026-10-09 21:40:44,421 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-172
+2026-10-09 21:40:44,428 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-3
+2026-10-09 21:40:44,428 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-3
+2026-10-09 21:40:44,431 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-173
+2026-10-09 21:40:44,441 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-174
+2026-10-09 21:40:44,451 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-22
+2026-10-09 21:40:44,451 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-175
+2026-10-09 21:40:44,451 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-22
+2026-10-09 21:40:44,460 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-176
+2026-10-09 21:40:44,472 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-177
+2026-10-09 21:40:44,481 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-178
+2026-10-09 21:40:44,491 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-179
+2026-10-09 21:40:44,493 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-10
+2026-10-09 21:40:44,493 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-10
+2026-10-09 21:40:44,501 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-180
+2026-10-09 21:40:44,510 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-181
+2026-10-09 21:40:44,521 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-182
+2026-10-09 21:40:44,530 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-183
+2026-10-09 21:40:44,541 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-184
+2026-10-09 21:40:44,550 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-185
+2026-10-09 21:40:44,560 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-186
+2026-10-09 21:40:44,571 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-187
+2026-10-09 21:40:44,581 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-188
+2026-10-09 21:40:44,591 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-189
+2026-10-09 21:40:44,600 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-190
+2026-10-09 21:40:44,610 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-191
+2026-10-09 21:40:44,614 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-4
+2026-10-09 21:40:44,614 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-4
+2026-10-09 21:40:44,620 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-192
+2026-10-09 21:40:44,630 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-193
+2026-10-09 21:40:44,641 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-194
+2026-10-09 21:40:44,650 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-195
+2026-10-09 21:40:44,660 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-196
+2026-10-09 21:40:44,670 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-197
+2026-10-09 21:40:44,681 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-198
+2026-10-09 21:40:44,683 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-23
+2026-10-09 21:40:44,684 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-23
+2026-10-09 21:40:44,690 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-199
+2026-10-09 21:40:44,693 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-38
+2026-10-09 21:40:44,693 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-38
+2026-10-09 21:40:44,701 INFO o.a.j.t.JMeterThread: Thread started: 200并发读线程组 1-200
+2026-10-09 21:40:44,785 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-25
+2026-10-09 21:40:44,785 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-25
+2026-10-09 21:40:44,902 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-32
+2026-10-09 21:40:44,903 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-32
+2026-10-09 21:40:44,903 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-26
+2026-10-09 21:40:44,903 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-26
+2026-10-09 21:40:45,102 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-24
+2026-10-09 21:40:45,102 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-24
+2026-10-09 21:40:45,316 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-30
+2026-10-09 21:40:45,316 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-30
+2026-10-09 21:40:45,359 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-33
+2026-10-09 21:40:45,360 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-33
+2026-10-09 21:40:45,403 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-42
+2026-10-09 21:40:45,403 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-42
+2026-10-09 21:40:45,408 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-28
+2026-10-09 21:40:45,408 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-28
+2026-10-09 21:40:45,546 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-36
+2026-10-09 21:40:45,547 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-36
+2026-10-09 21:40:45,708 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-31
+2026-10-09 21:40:45,708 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-31
+2026-10-09 21:40:45,846 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-29
+2026-10-09 21:40:45,846 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-34
+2026-10-09 21:40:45,846 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-34
+2026-10-09 21:40:45,846 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-29
+2026-10-09 21:40:45,864 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-54
+2026-10-09 21:40:45,866 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-54
+2026-10-09 21:40:45,884 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-41
+2026-10-09 21:40:45,885 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-41
+2026-10-09 21:40:45,903 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-49
+2026-10-09 21:40:45,903 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-49
+2026-10-09 21:40:45,957 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-40
+2026-10-09 21:40:45,958 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-40
+2026-10-09 21:40:45,963 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-48
+2026-10-09 21:40:45,964 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-48
+2026-10-09 21:40:45,982 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-46
+2026-10-09 21:40:45,982 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-46
+2026-10-09 21:40:45,993 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-37
+2026-10-09 21:40:45,993 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-37
+2026-10-09 21:40:46,011 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-35
+2026-10-09 21:40:46,011 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-35
+2026-10-09 21:40:46,032 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-47
+2026-10-09 21:40:46,033 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-47
+2026-10-09 21:40:46,034 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-59
+2026-10-09 21:40:46,034 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-59
+2026-10-09 21:40:46,079 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-56
+2026-10-09 21:40:46,079 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-56
+2026-10-09 21:40:46,106 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-58
+2026-10-09 21:40:46,106 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-58
+2026-10-09 21:40:46,119 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-52
+2026-10-09 21:40:46,120 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-52
+2026-10-09 21:40:46,143 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-45
+2026-10-09 21:40:46,143 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-45
+2026-10-09 21:40:46,163 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-44
+2026-10-09 21:40:46,163 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-44
+2026-10-09 21:40:46,166 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-60
+2026-10-09 21:40:46,167 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-60
+2026-10-09 21:40:46,227 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-27
+2026-10-09 21:40:46,227 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-27
+2026-10-09 21:40:46,248 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-82
+2026-10-09 21:40:46,248 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-82
+2026-10-09 21:40:46,253 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-55
+2026-10-09 21:40:46,253 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-55
+2026-10-09 21:40:46,301 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-75
+2026-10-09 21:40:46,301 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-75
+2026-10-09 21:40:46,313 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-51
+2026-10-09 21:40:46,313 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-51
+2026-10-09 21:40:46,327 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-71
+2026-10-09 21:40:46,327 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-71
+2026-10-09 21:40:46,365 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-74
+2026-10-09 21:40:46,365 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-74
+2026-10-09 21:40:46,395 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-43
+2026-10-09 21:40:46,396 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-43
+2026-10-09 21:40:46,396 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-65
+2026-10-09 21:40:46,397 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-65
+2026-10-09 21:40:46,397 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-67
+2026-10-09 21:40:46,397 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-67
+2026-10-09 21:40:46,397 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-39
+2026-10-09 21:40:46,397 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-39
+2026-10-09 21:40:46,404 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-66
+2026-10-09 21:40:46,404 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-66
+2026-10-09 21:40:46,420 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-102
+2026-10-09 21:40:46,421 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-102
+2026-10-09 21:40:46,424 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-94
+2026-10-09 21:40:46,424 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-94
+2026-10-09 21:40:46,433 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-76
+2026-10-09 21:40:46,433 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-76
+2026-10-09 21:40:46,436 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-57
+2026-10-09 21:40:46,436 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-57
+2026-10-09 21:40:46,464 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-53
+2026-10-09 21:40:46,464 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-53
+2026-10-09 21:40:46,502 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-92
+2026-10-09 21:40:46,502 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-92
+2026-10-09 21:40:46,534 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-68
+2026-10-09 21:40:46,534 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-68
+2026-10-09 21:40:46,550 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-50
+2026-10-09 21:40:46,550 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-50
+2026-10-09 21:40:46,555 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-104
+2026-10-09 21:40:46,555 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-104
+2026-10-09 21:40:46,559 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-79
+2026-10-09 21:40:46,560 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-79
+2026-10-09 21:40:46,568 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-61
+2026-10-09 21:40:46,569 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-61
+2026-10-09 21:40:46,576 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-63
+2026-10-09 21:40:46,577 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-63
+2026-10-09 21:40:46,610 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-69
+2026-10-09 21:40:46,610 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-69
+2026-10-09 21:40:46,610 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-108
+2026-10-09 21:40:46,610 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-108
+2026-10-09 21:40:46,618 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-64
+2026-10-09 21:40:46,618 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-64
+2026-10-09 21:40:46,636 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-81
+2026-10-09 21:40:46,636 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-81
+2026-10-09 21:40:46,663 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-78
+2026-10-09 21:40:46,663 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-78
+2026-10-09 21:40:46,669 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-95
+2026-10-09 21:40:46,669 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-95
+2026-10-09 21:40:46,672 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-86
+2026-10-09 21:40:46,672 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-86
+2026-10-09 21:40:46,674 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-62
+2026-10-09 21:40:46,674 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-62
+2026-10-09 21:40:46,681 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-110
+2026-10-09 21:40:46,681 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-110
+2026-10-09 21:40:46,712 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-89
+2026-10-09 21:40:46,712 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-89
+2026-10-09 21:40:46,723 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-84
+2026-10-09 21:40:46,723 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-84
+2026-10-09 21:40:46,723 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-97
+2026-10-09 21:40:46,723 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-97
+2026-10-09 21:40:46,726 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-87
+2026-10-09 21:40:46,727 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-87
+2026-10-09 21:40:46,730 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-77
+2026-10-09 21:40:46,731 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-77
+2026-10-09 21:40:46,794 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-70
+2026-10-09 21:40:46,795 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-70
+2026-10-09 21:40:46,803 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-120
+2026-10-09 21:40:46,804 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-120
+2026-10-09 21:40:46,813 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-96
+2026-10-09 21:40:46,813 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-96
+2026-10-09 21:40:46,827 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-98
+2026-10-09 21:40:46,827 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-98
+2026-10-09 21:40:46,827 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-72
+2026-10-09 21:40:46,827 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-72
+2026-10-09 21:40:46,837 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-141
+2026-10-09 21:40:46,837 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-141
+2026-10-09 21:40:46,841 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-73
+2026-10-09 21:40:46,841 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-73
+2026-10-09 21:40:46,850 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-109
+2026-10-09 21:40:46,850 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-109
+2026-10-09 21:40:46,867 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-121
+2026-10-09 21:40:46,868 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-121
+2026-10-09 21:40:46,898 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-128
+2026-10-09 21:40:46,899 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-128
+2026-10-09 21:40:46,902 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-162
+2026-10-09 21:40:46,902 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-162
+2026-10-09 21:40:46,947 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-105
+2026-10-09 21:40:46,947 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-105
+2026-10-09 21:40:46,955 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-117
+2026-10-09 21:40:46,955 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-117
+2026-10-09 21:40:46,958 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-143
+2026-10-09 21:40:46,958 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-143
+2026-10-09 21:40:46,964 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-113
+2026-10-09 21:40:46,965 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-113
+2026-10-09 21:40:46,978 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-103
+2026-10-09 21:40:46,978 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-103
+2026-10-09 21:40:46,992 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-125
+2026-10-09 21:40:46,992 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-125
+2026-10-09 21:40:46,996 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-116
+2026-10-09 21:40:46,996 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-116
+2026-10-09 21:40:47,014 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-93
+2026-10-09 21:40:47,015 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-93
+2026-10-09 21:40:47,016 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-149
+2026-10-09 21:40:47,017 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-149
+2026-10-09 21:40:47,017 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-123
+2026-10-09 21:40:47,017 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-123
+2026-10-09 21:40:47,042 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-80
+2026-10-09 21:40:47,044 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-80
+2026-10-09 21:40:47,046 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-112
+2026-10-09 21:40:47,046 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-112
+2026-10-09 21:40:47,046 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-85
+2026-10-09 21:40:47,047 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-85
+2026-10-09 21:40:47,060 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-153
+2026-10-09 21:40:47,060 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-153
+2026-10-09 21:40:47,075 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-176
+2026-10-09 21:40:47,076 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-176
+2026-10-09 21:40:47,078 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-91
+2026-10-09 21:40:47,078 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-91
+2026-10-09 21:40:47,090 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-115
+2026-10-09 21:40:47,091 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-115
+2026-10-09 21:40:47,107 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-88
+2026-10-09 21:40:47,107 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-88
+2026-10-09 21:40:47,145 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-106
+2026-10-09 21:40:47,146 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-106
+2026-10-09 21:40:47,150 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-137
+2026-10-09 21:40:47,150 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-137
+2026-10-09 21:40:47,165 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-111
+2026-10-09 21:40:47,165 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-111
+2026-10-09 21:40:47,170 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-124
+2026-10-09 21:40:47,170 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-142
+2026-10-09 21:40:47,170 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-124
+2026-10-09 21:40:47,170 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-142
+2026-10-09 21:40:47,174 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-127
+2026-10-09 21:40:47,174 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-127
+2026-10-09 21:40:47,177 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-99
+2026-10-09 21:40:47,177 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-99
+2026-10-09 21:40:47,184 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-107
+2026-10-09 21:40:47,184 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-107
+2026-10-09 21:40:47,186 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-133
+2026-10-09 21:40:47,186 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-133
+2026-10-09 21:40:47,193 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-129
+2026-10-09 21:40:47,193 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-129
+2026-10-09 21:40:47,198 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-126
+2026-10-09 21:40:47,198 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-126
+2026-10-09 21:40:47,200 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-100
+2026-10-09 21:40:47,200 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-101
+2026-10-09 21:40:47,200 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-100
+2026-10-09 21:40:47,200 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-101
+2026-10-09 21:40:47,209 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-175
+2026-10-09 21:40:47,209 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-175
+2026-10-09 21:40:47,211 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-83
+2026-10-09 21:40:47,211 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-83
+2026-10-09 21:40:47,222 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-172
+2026-10-09 21:40:47,222 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-172
+2026-10-09 21:40:47,225 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-174
+2026-10-09 21:40:47,225 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-174
+2026-10-09 21:40:47,227 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-145
+2026-10-09 21:40:47,227 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-132
+2026-10-09 21:40:47,227 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-145
+2026-10-09 21:40:47,227 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-132
+2026-10-09 21:40:47,228 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-168
+2026-10-09 21:40:47,228 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-168
+2026-10-09 21:40:47,229 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-118
+2026-10-09 21:40:47,229 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-118
+2026-10-09 21:40:47,241 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-134
+2026-10-09 21:40:47,241 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-134
+2026-10-09 21:40:47,244 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-119
+2026-10-09 21:40:47,244 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-119
+2026-10-09 21:40:47,249 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-155
+2026-10-09 21:40:47,249 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-159
+2026-10-09 21:40:47,249 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-159
+2026-10-09 21:40:47,249 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-155
+2026-10-09 21:40:47,252 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-130
+2026-10-09 21:40:47,252 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-130
+2026-10-09 21:40:47,257 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-166
+2026-10-09 21:40:47,257 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-166
+2026-10-09 21:40:47,262 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-180
+2026-10-09 21:40:47,262 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-180
+2026-10-09 21:40:47,264 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-131
+2026-10-09 21:40:47,265 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-131
+2026-10-09 21:40:47,266 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-135
+2026-10-09 21:40:47,266 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-135
+2026-10-09 21:40:47,267 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-139
+2026-10-09 21:40:47,267 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-139
+2026-10-09 21:40:47,269 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-164
+2026-10-09 21:40:47,269 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-164
+2026-10-09 21:40:47,272 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-156
+2026-10-09 21:40:47,272 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-156
+2026-10-09 21:40:47,281 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-122
+2026-10-09 21:40:47,281 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-122
+2026-10-09 21:40:47,282 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-152
+2026-10-09 21:40:47,282 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-152
+2026-10-09 21:40:47,283 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-146
+2026-10-09 21:40:47,283 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-146
+2026-10-09 21:40:47,289 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-190
+2026-10-09 21:40:47,289 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-190
+2026-10-09 21:40:47,291 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-179
+2026-10-09 21:40:47,291 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-179
+2026-10-09 21:40:47,293 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-158
+2026-10-09 21:40:47,293 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-158
+2026-10-09 21:40:47,294 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-157
+2026-10-09 21:40:47,294 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-157
+2026-10-09 21:40:47,296 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-161
+2026-10-09 21:40:47,296 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-161
+2026-10-09 21:40:47,296 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-167
+2026-10-09 21:40:47,296 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-167
+2026-10-09 21:40:47,298 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-114
+2026-10-09 21:40:47,299 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-114
+2026-10-09 21:40:47,300 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-90
+2026-10-09 21:40:47,300 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-90
+2026-10-09 21:40:47,300 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-136
+2026-10-09 21:40:47,300 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-136
+2026-10-09 21:40:47,301 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-147
+2026-10-09 21:40:47,301 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-147
+2026-10-09 21:40:47,302 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-140
+2026-10-09 21:40:47,302 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-140
+2026-10-09 21:40:47,306 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-148
+2026-10-09 21:40:47,306 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-148
+2026-10-09 21:40:47,310 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-169
+2026-10-09 21:40:47,310 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-169
+2026-10-09 21:40:47,314 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-186
+2026-10-09 21:40:47,314 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-150
+2026-10-09 21:40:47,314 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-186
+2026-10-09 21:40:47,314 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-150
+2026-10-09 21:40:47,314 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-189
+2026-10-09 21:40:47,315 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-189
+2026-10-09 21:40:47,318 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-160
+2026-10-09 21:40:47,318 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-160
+2026-10-09 21:40:47,319 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-192
+2026-10-09 21:40:47,319 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-192
+2026-10-09 21:40:47,320 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-154
+2026-10-09 21:40:47,320 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-154
+2026-10-09 21:40:47,326 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-138
+2026-10-09 21:40:47,326 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-138
+2026-10-09 21:40:47,333 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-144
+2026-10-09 21:40:47,333 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-144
+2026-10-09 21:40:47,334 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-151
+2026-10-09 21:40:47,334 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-151
+2026-10-09 21:40:47,335 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-195
+2026-10-09 21:40:47,335 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-195
+2026-10-09 21:40:47,336 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-170
+2026-10-09 21:40:47,336 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-170
+2026-10-09 21:40:47,336 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-171
+2026-10-09 21:40:47,337 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-171
+2026-10-09 21:40:47,337 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-187
+2026-10-09 21:40:47,337 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-187
+2026-10-09 21:40:47,339 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-165
+2026-10-09 21:40:47,340 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-165
+2026-10-09 21:40:47,341 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-163
+2026-10-09 21:40:47,342 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-163
+2026-10-09 21:40:47,342 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-178
+2026-10-09 21:40:47,342 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-178
+2026-10-09 21:40:47,343 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-185
+2026-10-09 21:40:47,343 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-185
+2026-10-09 21:40:47,345 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-199
+2026-10-09 21:40:47,346 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-199
+2026-10-09 21:40:47,346 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-173
+2026-10-09 21:40:47,346 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-173
+2026-10-09 21:40:47,350 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-188
+2026-10-09 21:40:47,350 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-193
+2026-10-09 21:40:47,350 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-188
+2026-10-09 21:40:47,350 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-193
+2026-10-09 21:40:47,353 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-177
+2026-10-09 21:40:47,353 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-177
+2026-10-09 21:40:47,355 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-198
+2026-10-09 21:40:47,356 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-182
+2026-10-09 21:40:47,356 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-198
+2026-10-09 21:40:47,356 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-182
+2026-10-09 21:40:47,357 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-191
+2026-10-09 21:40:47,357 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-191
+2026-10-09 21:40:47,357 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-181
+2026-10-09 21:40:47,357 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-181
+2026-10-09 21:40:47,359 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-196
+2026-10-09 21:40:47,359 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-196
+2026-10-09 21:40:47,360 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-183
+2026-10-09 21:40:47,360 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-200
+2026-10-09 21:40:47,360 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-183
+2026-10-09 21:40:47,360 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-200
+2026-10-09 21:40:47,361 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-184
+2026-10-09 21:40:47,361 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-184
+2026-10-09 21:40:47,367 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-194
+2026-10-09 21:40:47,367 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-194
+2026-10-09 21:40:47,369 INFO o.a.j.t.JMeterThread: Thread is done: 200并发读线程组 1-197
+2026-10-09 21:40:47,369 INFO o.a.j.t.JMeterThread: Thread finished: 200并发读线程组 1-197
+2026-10-09 21:40:47,369 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2026-10-09 21:40:47,370 INFO o.a.j.r.Summariser: summary =  10000 in 00:00:05 = 2138.6/s Avg:    55 Min:     1 Max:   528 Err:     0 (0.00%)
+2026-10-09 21:40:47,371 INFO o.a.j.JMeter: Generating Dashboard
+2026-10-09 21:40:47,371 INFO o.a.j.r.d.ReportGenerator: Flushing result collector before report Generation
+2026-10-09 21:40:47,399 INFO o.a.j.r.p.NormalizerSampleConsumer: Using format, 'ms', to parse timeStamp field
+2026-10-09 21:40:47,703 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.AggregateConsumer#stopProducing(): beginDate produced 0 samples
+2026-10-09 21:40:47,703 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.AggregateConsumer#stopProducing(): endDate produced 0 samples
+2026-10-09 21:40:47,704 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.ApdexSummaryConsumer#stopProducing(): apdexSummary produced 0 samples
+2026-10-09 21:40:47,704 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.RequestsSummaryConsumer#stopProducing(): requestsSummary produced 0 samples
+2026-10-09 21:40:47,713 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.StatisticsSummaryConsumer#stopProducing(): statisticsSummary produced 0 samples
+2026-10-09 21:40:47,714 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.Top5ErrorsBySamplerConsumer#stopProducing(): top5ErrorsBySampler produced 0 samples
+2026-10-09 21:40:47,714 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.ErrorsSummaryConsumer#stopProducing(): errorsSummary produced 0 samples
+2026-10-09 21:40:47,715 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.HitsPerSecondGraphConsumer#stopProducing(): hitsPerSecond produced 0 samples
+2026-10-09 21:40:47,807 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.LatencyVSRequestGraphConsumer#stopProducing(): latencyVsRequest produced 0 samples
+2026-10-09 21:40:47,808 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.SyntheticResponseTimeDistributionGraphConsumer#stopProducing(): syntheticResponseTimeDistribution produced 0 samples
+2026-10-09 21:40:47,809 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.BytesThroughputGraphConsumer#stopProducing(): bytesThroughputOverTime produced 0 samples
+2026-10-09 21:40:47,809 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.CodesPerSecondGraphConsumer#stopProducing(): codesPerSecond produced 0 samples
+2026-10-09 21:40:47,903 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeVSRequestGraphConsumer#stopProducing(): responseTimeVsRequest produced 0 samples
+2026-10-09 21:40:47,904 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): startIntervalControlerFilter produced 70000 samples
+2026-10-09 21:40:47,904 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TotalTPSGraphConsumer#stopProducing(): totalTPS produced 0 samples
+2026-10-09 21:40:47,904 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ActiveThreadsGraphConsumer#stopProducing(): activeThreadsOverTime produced 0 samples
+2026-10-09 21:40:47,904 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TimeVSThreadGraphConsumer#stopProducing(): timeVsThreads produced 0 samples
+2026-10-09 21:40:47,904 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeDistributionGraphConsumer#stopProducing(): responseTimeDistribution produced 0 samples
+2026-10-09 21:40:47,904 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TransactionsPerSecondGraphConsumer#stopProducing(): transactionsPerSecond produced 0 samples
+2026-10-09 21:40:47,904 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimePercentilesGraphConsumer#stopProducing(): responseTimePercentiles produced 0 samples
+2026-10-09 21:40:47,906 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimePercentilesOverTimeGraphConsumer#stopProducing(): responseTimePercentilesOverTime produced 0 samples
+2026-10-09 21:40:47,907 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeOverTimeGraphConsumer#stopProducing(): responseTimesOverTime produced 0 samples
+2026-10-09 21:40:47,907 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ConnectTimeOverTimeGraphConsumer#stopProducing(): connectTimeOverTime produced 0 samples
+2026-10-09 21:40:47,907 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.LatencyOverTimeGraphConsumer#stopProducing(): latenciesOverTime produced 0 samples
+2026-10-09 21:40:47,907 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): nameFilter produced 150000 samples
+2026-10-09 21:40:47,907 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): dateRangeFilter produced 30000 samples
+2026-10-09 21:40:47,907 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.NormalizerSampleConsumer#stopProducing(): normalizer produced 10000 samples
+2026-10-09 21:40:47,908 INFO o.a.j.r.p.CsvFileSampleSource: produce(): 10000 samples produced in 486ms on channel 0
+2026-10-09 21:40:47,908 INFO o.a.j.r.d.ReportGenerator: Exporting data using exporter:'json' of className:'org.apache.jmeter.report.dashboard.JsonExporter'
+2026-10-09 21:40:47,968 INFO o.a.j.r.d.JsonExporter: Found data for consumer statisticsSummary in context
+2026-10-09 21:40:47,968 INFO o.a.j.r.d.JsonExporter: Creating statistics for overall
+2026-10-09 21:40:47,969 INFO o.a.j.r.d.JsonExporter: Creating statistics for other transactions
+2026-10-09 21:40:47,969 INFO o.a.j.r.d.JsonExporter: Checking output folder
+2026-10-09 21:40:47,970 INFO o.a.j.r.d.JsonExporter: Writing statistics JSON to /home/zedran/mall-pro/benchmark/report/statistics.json
+2026-10-09 21:40:48,009 INFO o.a.j.r.d.ReportGenerator: Exporting data using exporter:'html' of className:'org.apache.jmeter.report.dashboard.HtmlTemplateExporter'
+2026-10-09 21:40:48,014 INFO o.a.j.r.d.HtmlTemplateExporter: Will generate dashboard in folder: /home/zedran/mall-pro/benchmark/report
+2026-10-09 21:40:48,181 INFO o.a.j.r.d.HtmlTemplateExporter: Report will be generated in: /home/zedran/mall-pro/benchmark/report, creating folder structure
+2026-10-09 21:40:48,183 INFO o.a.j.r.d.TemplateVisitor: Copying folder from '/home/zedran/下载/apache-jmeter-5.6.3/bin/report-template' to '/home/zedran/mall-pro/benchmark/report', got message: /home/zedran/mall-pro/benchmark/report, found non empty folder with following content [/home/zedran/mall-pro/benchmark/report/statistics.json], will be ignored
+2026-10-09 21:40:48,399 INFO o.a.j.JMeter: Dashboard generated
