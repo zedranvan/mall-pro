@@ -18,11 +18,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 // 白名单排除：公开接口与第三方回调放行
                 .excludePathPatterns(
                         "/api/program/**",           // 演出检索与详情公开访问
+                        "/api/search/**",            // Elasticsearch 搜索中枢公开访问
                         "/api/user/login",          // 登录接口
                         "/api/user/register",       // 注册接口
                         "/api/tickets/category/**",  // 游客公开查票
                         "/api/tickets/verify",          // 闸机硬件在线核验
                         "/api/tickets/verify-offline",  // 闸机硬件断网离线核验
+                        "/api/seats/map",               // 公开选座大厅底图
+                        "/api/seats/recommend",         // 公开连座推荐试算
+                        "/api/seats/sync",              // 场馆位图同步预热
+                        "/api/coupon/templates",        // 公开领券活动大厅
+                        "/api/coupon/preheat",          // 优惠券运营预热
                         "/api/seckill/preheat",     // 运营预热
                         "/api/pay/mock/**",         // 沙箱收银台
                         "/api/pay/notify",          // 支付回调

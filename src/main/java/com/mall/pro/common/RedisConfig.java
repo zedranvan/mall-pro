@@ -16,4 +16,12 @@ public class RedisConfig {
         redisScript.setResultType(Long.class);
         return redisScript;
     }
+
+    @Bean
+    public DefaultRedisScript<Long> couponClaimScript() {
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+        redisScript.setLocation(new ClassPathResource("lua/coupon_claim.lua"));
+        redisScript.setResultType(Long.class);
+        return redisScript;
+    }
 }

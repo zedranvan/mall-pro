@@ -121,3 +121,68 @@ CREATE TABLE IF NOT EXISTS t_outbox (
 
 CREATE INDEX IF NOT EXISTS idx_outbox_status_create ON t_outbox (status, create_time);
 
+-- ------------------------------------------------------------
+-- 7. 场馆物理选座表 (Physical Seat Selection & Reservation)
+--
+--    ★ 商业级全真选座与 Bitmap 位图映射：
+--      seat_index 对应场馆连续 bit 偏移量 (0-based)
+--      status: 0-空闲可选, 1-临时锁定待付款, 2-已售出
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS d_seat (
+    id              BIGINT        PRIMARY KEY,                 -- 雪花 ID
+    program_id      BIGINT        NOT NULL,                    -- 演出 ID
+    category_id     BIGINT        NOT NULL,                    -- 票档 ID
+    area            VARCHAR(64)   NOT NULL,                    -- 区域名称: 南看台A区
+    row_num         INT           NOT NULL,                    -- 排号
+    col_num         INT           NOT NULL,                    -- 座号
+    seat_index      INT           NOT NULL,                    -- 物理位图偏移下标
+    status          SMALLINT      NOT NULL DEFAULT 0,          -- 0可选 1锁定中 2已售出
+    lock_user_id    BIGINT,                                    -- 临时锁定的用户ID
+    lock_time       TIMESTAMP,                                 -- 临时锁定时间
+    version         INT           NOT NULL DEFAULT 0,          -- 乐观锁版本号
+    create_time     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uk_program_seat_index ON d_seat(program_id, seat_index);
+CREATE INDEX IF NOT EXISTS idx_program_category ON d_seat(program_id, category_id);
+
+-- ------------------------------------------------------------
+-- 8. 营销优惠券中心 (Marketing Coupon Engine)
+--
+--    ★ 防超发、多态资产生命周期与最优抵扣：
+--      d_coupon_template: 优惠券模板（满减、折扣、立减）
+--      d_coupon_user: 用户持有的优惠券资产 (0未使用 1冻结 2已核销 3已失效)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS d_coupon_template (
+    id                  BIGINT          PRIMARY KEY,                  -- 模板ID
+    name                VARCHAR(128)    NOT NULL,                     -- 优惠券名称
+    type                SMALLINT        NOT NULL,                     -- 1:满减券, 2:折扣券, 3:无门槛立减
+    threshold_amount    NUMERIC(10, 2)  NOT NULL DEFAULT 0.00,        -- 使用门槛金额 (0表示无门槛)
+    discount_amount     NUMERIC(10, 2)  NOT NULL DEFAULT 0.00,        -- 满减/立减减免金额
+    discount_rate       NUMERIC(5, 2),                                -- 折扣率 (如 0.85 表示 85折)
+    max_discount_amount NUMERIC(10, 2),                               -- 折扣券最高减免封顶金额
+    total_quota         INT             NOT NULL,                     -- 总发放配额
+    remain_quota        INT             NOT NULL,                     -- 剩余未领取配额
+    valid_start_time    TIMESTAMP       NOT NULL,                     -- 有效期起始时间
+    valid_end_time      TIMESTAMP       NOT NULL,                     -- 有效期截止时间
+    status              SMALLINT        NOT NULL DEFAULT 1,           -- 1:启用, 0:停用
+    create_time         TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time         TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS d_coupon_user (
+    id                  BIGINT          PRIMARY KEY,                  -- 用户券ID
+    coupon_code         VARCHAR(64)     UNIQUE NOT NULL,              -- 唯一防伪券码
+    user_id             BIGINT          NOT NULL,                     -- 持有用户ID
+    template_id         BIGINT          NOT NULL,                     -- 归属模板ID
+    status              SMALLINT        NOT NULL DEFAULT 0,           -- 0:未使用, 1:冻结锁定中, 2:已核销使用, 3:已失效
+    order_id            BIGINT,                                       -- 关联消费的订单ID
+    used_time           TIMESTAMP,                                    -- 核销时间
+    create_time         TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time         TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uk_user_template ON d_coupon_user(user_id, template_id);
+CREATE INDEX IF NOT EXISTS idx_coupon_user_status ON d_coupon_user(user_id, status);
+
