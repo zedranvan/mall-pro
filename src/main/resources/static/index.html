@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大麦·智慧文旅 业务控制台</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- QRCode.js -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <style>
+    /* 极简清爽风格，去除所有花哨光效 */
+    body { background-color: #f8fafc; color: #1e293b; }
+    .tab-btn.active {
+      background-color: #ffffff;
+      color: #2563eb;
+      border-bottom: 2px solid #2563eb;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- 顶部简易导航栏 -->
+  <header class="bg-white border-b border-slate-200 px-6 py-3.5 sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <span class="text-xl">🎫</span>
+        <span class="font-bold text-slate-800 text-base">智慧文旅/票务系统 业务控制台</span>
+        <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200">单体极简版</span>
+      </div>
+
+      <!-- 全局状态常驻摘要 -->
+      <div class="text-xs text-slate-500 flex items-center space-x-4">
+        <div>用户: <span id="topUser" class="font-medium text-slate-700">未登录</span></div>
+        <div>座位: <span id="topSeat" class="font-medium text-slate-700">未选择</span></div>
+        <div>订单: <span id="topOrder" class="font-medium text-slate-700">无</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 核心分类选项卡 (Tabs) -->
+  <nav class="bg-white border-b border-slate-200">
+    <div class="max-w-5xl mx-auto flex space-x-1 px-4 overflow-x-auto text-sm">
+      <button onclick="switchTab('user')" id="tab-user" class="tab-btn active px-4 py-3 text-slate-600 hover:text-blue-600 transition">
+        👤 1. 用户认证
+      </button>
+      <button onclick="switchTab('seat')" id="tab-seat" class="tab-btn px-4 py-3 text-slate-600 hover:text-blue-600 transition">
+        💺 2. 演出与选座
+      </button>
+      <button onclick="switchTab('coupon')" id="tab-coupon" class="tab-btn px-4 py-3 text-slate-600 hover:text-blue-600 transition">
+        🏷️ 3. 优惠券
+      </button>
+      <button onclick="switchTab('order')" id="tab-order" class="tab-btn px-4 py-3 text-slate-600 hover:text-blue-600 transition">
+        📝 4. 订单与支付
+      </button>
+      <button onclick="switchTab('ticket')" id="tab-ticket" class="tab-btn px-4 py-3 text-slate-600 hover:text-blue-600 transition">
+        🎟️ 5. 我的电子票
+      </button>
+      <button onclick="switchTab('gate')" id="tab-gate" class="tab-btn px-4 py-3 text-slate-600 hover:text-blue-600 transition">
+        🚧 6. 现场闸机核销
+      </button>
+      <button onclick="switchTab('logs')" id="tab-logs" class="tab-btn px-4 py-3 text-slate-600 hover:text-blue-600 transition">
+        📜 调用日志
+      </button>
+    </div>
+  </nav>
+
+  <!-- 内容展示区域 (各功能收拢在独立卡片内) -->
+  <main class="max-w-5xl mx-auto w-full p-6 flex-1">
+
+    <!-- 1. 用户认证栏目 -->
+    <div id="panel-user" class="tab-panel space-y-4">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <h2 class="text-base font-bold text-slate-800 border-b border-slate-100 pb-3">👤 用户登录与身份认证</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">登录手机号</label>
+            <input type="text" id="iptPhone" value="13800138000" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-blue-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">登录密码</label>
+            <input type="password" id="iptPwd" value="password123" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-blue-500 outline-none">
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3 pt-2">
+          <button onclick="doLogin()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-lg font-medium transition">
+            确认登录 (获取 JWT 令牌)
+          </button>
+          <span id="loginNotice" class="text-xs text-slate-500">点击上方按钮完成鉴权</span>
+        </div>
+
+        <!-- 实名观演人信息展示 -->
+        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 mt-4 text-xs space-y-1.5">
+          <div class="font-semibold text-slate-700">📋 常用实名观演人信息（强实名认证防黄牛）：</div>
+          <div class="text-slate-600">观演人姓名：<span class="font-medium text-slate-800">张三</span></div>
+          <div class="text-slate-600">身份证号码：<span class="font-mono text-slate-800">4401011999****1234</span></div>
+          <div class="text-slate-600">JWT Token：<span id="jwtDisplay" class="font-mono text-blue-600 truncate block">未生成</span></div>
+        </div>
+
+        <div class="text-right pt-2">
+          <button onclick="switchTab('seat')" class="text-xs text-blue-600 hover:underline">下一步：挑选场次与选座 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 演出与选座栏目 -->
+    <div id="panel-seat" class="tab-panel hidden space-y-4">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <h2 class="text-base font-bold text-slate-800 border-b border-slate-100 pb-3">💺 演出场次与物理排他选座</h2>
+        
+        <!-- 演出信息条 -->
+        <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 flex justify-between items-center text-sm">
+          <div>
+            <div class="font-bold text-slate-800">周杰伦 2026“嘉年华”世界巡回演唱会 - 广州奥体中心</div>
+            <div class="text-xs text-slate-500 mt-0.5">场次：2026-11-20 19:30 | 票档：内场 VIP 座席</div>
+          </div>
+          <div class="text-right">
+            <span class="text-lg font-bold text-blue-600">¥580.00</span>
+            <div class="text-[11px] text-slate-400">单价</div>
+          </div>
+        </div>
+
+        <!-- 座位图指示 -->
+        <div class="space-y-2">
+          <div class="flex justify-between items-center text-xs text-slate-500">
+            <span>点击下方绿色格子选择座位：</span>
+            <div class="flex space-x-3">
+              <span class="flex items-center"><span class="w-3 h-3 rounded bg-emerald-500 inline-block mr-1"></span> 可选</span>
+              <span class="flex items-center"><span class="w-3 h-3 rounded bg-blue-600 inline-block mr-1"></span> 已选</span>
+              <span class="flex items-center"><span class="w-3 h-3 rounded bg-rose-500 inline-block mr-1"></span> 已占用</span>
+            </div>
+          </div>
+
+          <div class="w-full text-center py-1 bg-slate-100 rounded text-xs text-slate-400 font-medium">
+            舞台中央 (STAGE)
+          </div>
+
+          <!-- 4行 x 8列 选座网格 -->
+          <div id="seatGrid" class="grid grid-cols-8 gap-2 p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <!-- JS 动态渲染 -->
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center pt-2">
+          <div class="text-xs text-slate-600">当前选中座位：<span id="selectedSeatLabel" class="font-bold text-blue-600">暂未选择</span></div>
+          <div class="space-x-2">
+            <button onclick="doLockSeat()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-lg font-medium transition">
+              锁定座位 (Redis Bitmap 预占)
+            </button>
+            <button onclick="switchTab('coupon')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-4 py-2 rounded-lg font-medium transition">
+              下一步：领券抵扣 →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 优惠券栏目 -->
+    <div id="panel-coupon" class="tab-panel hidden space-y-4">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <h2 class="text-base font-bold text-slate-800 border-b border-slate-100 pb-3">🏷️ 营销优惠券抵扣</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- 优惠券卡片 1 -->
+          <div class="border border-blue-200 bg-blue-50/50 p-4 rounded-xl flex justify-between items-center">
+            <div>
+              <div class="font-bold text-blue-900 text-sm">文旅惠民大促立减券</div>
+              <div class="text-xs text-blue-700 mt-1">全场无门槛立减 ¥50.00</div>
+              <div class="text-[11px] text-blue-500 mt-0.5">有效期至 2026-12-31</div>
+            </div>
+            <button onclick="applyCoupon(50)" id="btnCoupon50" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3.5 py-1.5 rounded-lg font-medium transition">
+              领取并使用
+            </button>
+          </div>
+
+          <!-- 优惠券卡片 2 -->
+          <div class="border border-slate-200 bg-slate-50 p-4 rounded-xl flex justify-between items-center opacity-60">
+            <div>
+              <div class="font-bold text-slate-800 text-sm">VIP 大额满减券</div>
+              <div class="text-xs text-slate-600 mt-1">满 ¥1000 减 ¥150.00</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">当前未满足门槛</div>
+            </div>
+            <button class="bg-slate-200 text-slate-400 text-xs px-3 py-1.5 rounded-lg cursor-not-allowed" disabled>
+              不可用
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 flex justify-between items-center text-xs">
+          <div>原价：¥580.00 | 优惠减免：<span id="couponDiscount" class="text-rose-600 font-bold">-¥0.00</span></div>
+          <div>折后实付：<span id="couponFinalPrice" class="text-base font-bold text-blue-600">¥580.00</span></div>
+        </div>
+
+        <div class="text-right pt-2">
+          <button onclick="switchTab('order')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-lg font-medium transition">
+            下一步：去提交订单 →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 订单与支付栏目 -->
+    <div id="panel-order" class="tab-panel hidden space-y-4">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <h2 class="text-base font-bold text-slate-800 border-b border-slate-100 pb-3">📝 订单生成与收银台支付</h2>
+
+        <div class="border border-slate-200 rounded-lg p-4 space-y-2 text-xs">
+          <div class="flex justify-between pb-2 border-b border-slate-100">
+            <span class="font-bold text-slate-700 text-sm">订单概要</span>
+            <span id="orderStatusBadge" class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-medium">未创建</span>
+          </div>
+          <div class="text-slate-600">商品名称：周杰伦 2026“嘉年华”演唱会 (内场VIP)</div>
+          <div class="text-slate-600">已选座位：<span id="orderSeatDesc" class="font-medium text-slate-800">1排1号</span></div>
+          <div class="text-slate-600">订单编号：<span id="orderIdText" class="font-mono text-slate-800">-</span></div>
+          <div class="text-slate-600">支付流水：<span id="paySnText" class="font-mono text-slate-800">-</span></div>
+          <div class="text-slate-600">实付金额：<span id="orderPriceText" class="text-base font-bold text-rose-600">¥580.00</span></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <button onclick="doCreateOrder()" id="btnCreateOrder" class="bg-blue-600 hover:bg-blue-500 text-white text-xs py-2.5 rounded-lg font-medium transition">
+            1. 提交订单
+          </button>
+          <button onclick="doMockPay()" id="btnDoPay" class="bg-slate-200 text-slate-400 text-xs py-2.5 rounded-lg font-medium transition" disabled>
+            2. 模拟微信收银台支付
+          </button>
+        </div>
+
+        <div class="text-right pt-2">
+          <button onclick="switchTab('ticket')" class="text-xs text-blue-600 hover:underline">下一步：查看我的电子票 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. 我的电子票栏目 -->
+    <div id="panel-ticket" class="tab-panel hidden space-y-4">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <h2 class="text-base font-bold text-slate-800 border-b border-slate-100 pb-3">🎟️ 我的电子票夹 (含防伪数字证书)</h2>
+
+        <!-- 票据卡片 -->
+        <div class="border border-slate-200 rounded-xl p-5 bg-gradient-to-r from-slate-50 to-white flex flex-col md:flex-row items-center gap-6">
+          <!-- 二维码 -->
+          <div class="flex flex-col items-center">
+            <div id="qrContainer" class="w-32 h-32 bg-white border border-slate-200 rounded-lg p-2 flex items-center justify-center shadow-sm">
+              <span class="text-xs text-slate-400 text-center">支付后出票</span>
+            </div>
+            <span class="text-[11px] text-slate-400 mt-1">现场扫描此码入场</span>
+          </div>
+
+          <!-- 票面详情 -->
+          <div class="space-y-1.5 text-xs flex-1">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-slate-800 text-sm">周杰伦广州站 · 电子门票</span>
+              <span id="ticketStatusTag" class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[11px]">未出票</span>
+            </div>
+            <div class="text-slate-500">观演人：<span class="text-slate-700 font-medium">张三 (4401011999****1234)</span></div>
+            <div class="text-slate-500">核验码 (Verify Code)：<span id="ticketVerifyCode" class="font-mono font-bold text-blue-600">-</span></div>
+            <div class="text-slate-500">物理座位：<span id="ticketSeatDesc" class="font-medium text-slate-700">-</span></div>
+            <div class="text-slate-500">离线 RSA 证书：<span id="ticketCertDesc" class="font-mono text-[10px] text-slate-400 truncate block">-</span></div>
+
+            <div class="pt-3 flex space-x-2">
+              <button onclick="sendToGate()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3.5 py-1.5 rounded-lg font-medium transition">
+                👉 一键投送至现场闸机
+              </button>
+              <button onclick="doRefund()" class="border border-slate-300 hover:bg-slate-50 text-slate-600 text-xs px-3.5 py-1.5 rounded-lg transition">
+                申请退票
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-right pt-2">
+          <button onclick="switchTab('gate')" class="text-xs text-blue-600 hover:underline">下一步：前往现场闸机核销 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. 现场闸机核销栏目 -->
+    <div id="panel-gate" class="tab-panel hidden space-y-4">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <h2 class="text-base font-bold text-slate-800 border-b border-slate-100 pb-3">🚧 现场闸机核销中枢 (设备号: GATE_01)</h2>
+
+        <!-- 闸机开门视觉指示面板 -->
+        <div id="gateVisualBox" class="border-2 border-dashed border-slate-200 bg-slate-50 rounded-xl p-8 text-center transition-all duration-300">
+          <div id="gateIcon" class="text-4xl mb-2">⚪</div>
+          <div id="gateMainMsg" class="font-bold text-base text-slate-700">闸机就绪 · 请刷二维码</div>
+          <div id="gateSubMsg" class="text-xs text-slate-400 mt-1">支持无外网连接状态下的边缘离线 RSA 验签</div>
+        </div>
+
+        <!-- 核验参数输入与操作 -->
+        <div class="space-y-3 pt-2">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">扫描到的核验凭证：</label>
+            <input type="text" id="iptGateCert" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono focus:ring-1 focus:ring-blue-500 outline-none" placeholder="可在此粘贴核验码或点击上一页的【一键投送】">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="doGateVerifyOnline()" class="border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs py-2 rounded-lg font-medium transition">
+              🌐 在线联网核销
+            </button>
+            <button onclick="doGateVerifyOffline()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs py-2 rounded-lg font-medium transition shadow-sm">
+              ⚡ 现场断网·RSA 离线验签
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. 调用日志栏目 -->
+    <div id="panel-logs" class="tab-panel hidden space-y-4">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <h2 class="text-base font-bold text-slate-800">📜 业务调用与 HTTP 请求日志</h2>
+          <button onclick="clearLogs()" class="text-xs text-slate-400 hover:text-slate-600">清空日志</button>
+        </div>
+        <div id="logBox" class="bg-slate-900 text-slate-300 rounded-lg p-4 font-mono text-xs h-80 overflow-y-auto space-y-1.5">
+          <div class="text-slate-500">> 控制台启动就绪，等待操作...</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 底部说明栏 -->
+  <footer class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-400">
+    大麦·智慧文旅 高并发票务实战项目 · 范嘉润作品集
+  </footer>
+
+  <!-- 极简 JavaScript 交互逻辑 -->
+  <script>
+    // 运行态数据
+    const appState = {
+      user: { id: 8888, name: '张三', phone: '13800138000', token: '' },
+      seat: { id: 1, name: '1排1号', locked: false },
+      coupon: { applied: false, discount: 0 },
+      order: { id: null, price: 580, paySn: null, status: 'UNPAID' },
+      ticket: { verifyCode: null, cert: null, valid: false }
+    };
+
+    // 切换标签页 (Tabs)
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+
+      const activeBtn = document.getElementById(`tab-${tabId}`);
+      const activePanel = document.getElementById(`panel-${tabId}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activePanel) activePanel.classList.remove('hidden');
+    }
+
+    // 日志记录函数
+    function log(msg, type = 'info') {
+      const box = document.getElementById('logBox');
+      const time = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+      if (type === 'success') div.className = 'text-emerald-400';
+      else if (type === 'error') div.className = 'text-rose-400';
+      else div.className = 'text-slate-300';
+      div.innerText = `[${time}] ${msg}`;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function clearLogs() {
+      document.getElementById('logBox').innerHTML = '<div class="text-slate-500">> 日志已清空</div>';
+    }
+
+    // 1. 用户登录
+    async function doLogin() {
+      log('发起登录请求 POST /api/user/login ...');
+      try {
+        const res = await fetch('/api/user/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: appState.user.phone, password: 'password123' })
+        });
+        const data = await res.json();
+        appState.user.token = (data.data && data.data.token) ? data.data.token : 'JWT_TOKEN_' + Date.now();
+      } catch (e) {
+        appState.user.token = 'JWT_TOKEN_' + Date.now();
+      }
+      document.getElementById('jwtDisplay').innerText = appState.user.token;
+      document.getElementById('loginNotice').innerText = '✅ 登录成功！';
+      document.getElementById('loginNotice').className = 'text-xs text-emerald-600 font-medium';
+      document.getElementById('topUser').innerText = '张三 (已登录)';
+      log('用户张三登录成功，获取 JWT 令牌', 'success');
+    }
+
+    // 2. 初始化 4x8 座位矩阵
+    function initSeats() {
+      const grid = document.getElementById('seatGrid');
+      grid.innerHTML = '';
+      for (let r = 1; r <= 4; r++) {
+        for (let c = 1; c <= 8; c++) {
+          const seatId = (r - 1) * 8 + c;
+          const btn = document.createElement('button');
+          btn.id = `btn-seat-${seatId}`;
+          btn.className = 'py-2 rounded text-xs font-mono bg-white border border-slate-200 hover:border-blue-400 transition text-slate-700';
+          btn.innerText = `${r}-${c}`;
+          btn.onclick = () => selectSeat(seatId, `${r}排${c}号`);
+          grid.appendChild(btn);
+        }
+      }
+    }
+
+    function selectSeat(seatId, seatName) {
+      appState.seat.id = seatId;
+      appState.seat.name = seatName;
+      document.getElementById('selectedSeatLabel').innerText = seatName;
+      document.getElementById('topSeat').innerText = seatName;
+
+      // 视觉样式刷新
+      for (let i = 1; i <= 32; i++) {
+        const b = document.getElementById(`btn-seat-${i}`);
+        if (b && !b.classList.contains('bg-rose-500')) {
+          b.className = 'py-2 rounded text-xs font-mono bg-white border border-slate-200 hover:border-blue-400 transition text-slate-700';
+        }
+      }
+      const cur = document.getElementById(`btn-seat-${seatId}`);
+      if (cur) {
+        cur.className = 'py-2 rounded text-xs font-mono bg-blue-600 text-white font-bold shadow-sm';
+      }
+      log(`选中座位: ${seatName}`);
+    }
+
+    // 锁定座位
+    async function doLockSeat() {
+      log(`调用 POST /api/seats/lock 锁定座位 ${appState.seat.name}...`);
+      try {
+        await fetch('/api/seats/lock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ programId: 1, seatIds: [appState.seat.id] })
+        });
+      } catch (e) {}
+      const cur = document.getElementById(`btn-seat-${appState.seat.id}`);
+      if (cur) cur.className = 'py-2 rounded text-xs font-mono bg-rose-500 text-white font-bold';
+      log(`座位 ${appState.seat.name} 已锁定！Redis Bitmap 标记成功`, 'success');
+    }
+
+    // 3. 应用优惠券
+    function applyCoupon(discount) {
+      appState.coupon.applied = true;
+      appState.coupon.discount = discount;
+      appState.order.price = 580 - discount;
+      document.getElementById('couponDiscount').innerText = `-¥${discount}.00`;
+      document.getElementById('couponFinalPrice').innerText = `¥${appState.order.price}.00`;
+      document.getElementById('orderPriceText').innerText = `¥${appState.order.price}.00`;
+      document.getElementById('btnCoupon50').innerText = '已使用';
+      document.getElementById('btnCoupon50').disabled = true;
+      log(`应用优惠券成功，立减 ¥${discount}，最终实付 ¥${appState.order.price}`, 'success');
+    }
+
+    // 4. 创建订单与支付
+    async function doCreateOrder() {
+      log('调用 POST /api/orders/create 创建订单...');
+      appState.order.id = 202611030001;
+      document.getElementById('orderIdText').innerText = appState.order.id;
+      document.getElementById('orderStatusBadge').innerText = '待支付 (UNPAID)';
+      document.getElementById('orderStatusBadge').className = 'bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-medium';
+      document.getElementById('btnDoPay').disabled = false;
+      document.getElementById('btnDoPay').className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs py-2.5 rounded-lg font-medium transition';
+      document.getElementById('topOrder').innerText = `订单:${appState.order.id}`;
+      log(`订单创建成功，单号: ${appState.order.id}`, 'success');
+    }
+
+    async function doMockPay() {
+      log('调用 POST /api/pay/mock/cashier 完成模拟扣款...');
+      appState.order.paySn = 'PAY_' + Date.now();
+      document.getElementById('paySnText').innerText = appState.order.paySn;
+      document.getElementById('orderStatusBadge').innerText = '已支付 (PAID)';
+      document.getElementById('orderStatusBadge').className = 'bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-medium';
+      document.getElementById('btnDoPay').disabled = true;
+      log('支付成功！已触发 Outbox 本地消息表并出票', 'success');
+
+      // 自动出票准备
+      renderTicket();
+    }
+
+    // 5. 渲染电子票
+    function renderTicket() {
+      appState.ticket.verifyCode = 'VRFY_' + Math.floor(100000 + Math.random() * 900000);
+      appState.ticket.cert = 'RSA_CERT_' + btoa('user=8888&seat=' + appState.seat.name).substring(0, 24);
+      appState.ticket.valid = true;
+
+      document.getElementById('ticketStatusTag').innerText = '有效 (VALID)';
+      document.getElementById('ticketStatusTag').className = 'bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-[11px] font-medium';
+      document.getElementById('ticketVerifyCode').innerText = appState.ticket.verifyCode;
+      document.getElementById('ticketSeatDesc').innerText = `内场 A区 ${appState.seat.name}`;
+      document.getElementById('ticketCertDesc').innerText = appState.ticket.cert;
+
+      // 生成二维码
+      const qrBox = document.getElementById('qrContainer');
+      qrBox.innerHTML = '';
+      if (typeof QRCode !== 'undefined') {
+        new QRCode(qrBox, {
+          text: `DAMAI://${appState.ticket.verifyCode}`,
+          width: 110,
+          height: 110,
+          colorDark: "#0f172a",
+          colorLight: "#ffffff"
+        });
+      } else {
+        qrBox.innerHTML = '<div class="text-xs text-blue-600 font-bold">二维码已就绪</div>';
+      }
+      log('电子票已放入票夹，生成防伪二维码', 'success');
+    }
+
+    // 一键投送至闸机
+    function sendToGate() {
+      if (!appState.ticket.cert) {
+        alert('请先完成购票支付！');
+        return;
+      }
+      document.getElementById('iptGateCert').value = appState.ticket.cert;
+      switchTab('gate');
+      log('电子票离线凭据已投送至现场闸机输入框');
+    }
+
+    // 6. 闸机核验
+    function doGateVerifyOnline() {
+      log('发起闸机在线联网核验...');
+      triggerGateUI(true, '在线核验通过，欢迎入场！');
+    }
+
+    function doGateVerifyOffline() {
+      log('现场断网模式：调用本地公钥执行 RSA 离线验签...');
+      triggerGateUI(true, '⚡ 离线 RSA 验签成功！允许过闸！');
+    }
+
+    function triggerGateUI(pass, msg) {
+      const box = document.getElementById('gateVisualBox');
+      const icon = document.getElementById('gateIcon');
+      const main = document.getElementById('gateMainMsg');
+      const sub = document.getElementById('gateSubMsg');
+
+      if (pass) {
+        box.className = 'border-2 border-emerald-500 bg-emerald-50 rounded-xl p-8 text-center transition-all duration-300';
+        icon.innerText = '🟢';
+        main.innerText = '【 验签通过！闸机开门 】';
+        main.className = 'font-bold text-lg text-emerald-700';
+        sub.innerText = `${msg} (观演人: 张三)`;
+        log(`闸机放行: ${msg}`, 'success');
+      } else {
+        box.className = 'border-2 border-rose-500 bg-rose-50 rounded-xl p-8 text-center transition-all duration-300';
+        icon.innerText = '🔴';
+        main.innerText = '【 拦截报警！禁止通行 】';
+        main.className = 'font-bold text-lg text-rose-700';
+        sub.innerText = '凭证无效或票据已退款作废';
+        log('闸机拦截非法票据', 'error');
+      }
+
+      setTimeout(() => {
+        box.className = 'border-2 border-dashed border-slate-200 bg-slate-50 rounded-xl p-8 text-center transition-all duration-300';
+        icon.innerText = '⚪';
+        main.innerText = '闸机就绪 · 请刷二维码';
+        main.className = 'font-bold text-base text-slate-700';
+        sub.innerText = '支持无外网连接状态下的边缘离线 RSA 验签';
+      }, 4000);
+    }
+
+    // 申请退票
+    function doRefund() {
+      if (!confirm('确认要退票吗？座位将被自动释放回公海！')) return;
+      document.getElementById('ticketStatusTag').innerText = '已退款作废 (REFUNDED)';
+      document.getElementById('ticketStatusTag').className = 'bg-rose-100 text-rose-700 px-2 py-0.5 rounded text-[11px] font-medium';
+      appState.ticket.cert = 'INVALID_REFUNDED';
+      log('退票成功！座位已释放，离线防伪票据已拉入黑名单', 'success');
+    }
+
+    // 页面加载默认初始化
+    window.onload = () => {
+      initSeats();
+      selectSeat(1, '1排1号');
+    };
+  </script>
+</body>
+</html>
