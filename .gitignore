@@ -5,3 +5,4 @@ logs/
 .mvn/wrapper/maven-wrapper.jar
 benchmark/report/
 benchmark/*.jtl
+*.db
